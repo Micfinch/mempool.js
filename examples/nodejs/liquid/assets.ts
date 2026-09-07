@@ -8,9 +8,17 @@ const init = async () => {
     
     const asset_id =
     '6f0279e9ed041c3d710a9f57d0c02928416460c4b722ae3457a11eec381c526d';
+
+    const asset_ids = [
+      asset_id,
+      'a0c358a0f6947864af3a06f3f6a2aeb304df7fd95c922f2f22d7412399ce7691',
+    ];
     
     const asset = await assets.getAsset({ asset_id });
     console.log(asset);
+
+    const collectedAssets = await assets.getAssets({ asset_ids });
+    console.log(collectedAssets);
     
     const assetTxs = await assets.getAssetTxs({ asset_id, is_mempool: false });
     console.log(assetTxs);

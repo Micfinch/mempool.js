@@ -7,6 +7,13 @@ export const useAssets = (api: AxiosInstance): AssetsInstance => {
     return data;
   };
 
+  const getAssets = async (params: { asset_ids: string[] }) => {
+    const data = await Promise.all(
+      params.asset_ids.map((asset_id) => getAsset({ asset_id }))
+    );
+    return data;
+  };
+
   const getAssetIcon = async (params: { asset_id: string }) => {
     const { data } = await api.get(`/v1/asset/${params.asset_id}/icon`);
     return data;
@@ -41,6 +48,7 @@ export const useAssets = (api: AxiosInstance): AssetsInstance => {
 
   return {
     getAsset,
+    getAssets,
     getAssetIcon,
     getAssetTxs,
     getAssetSupply,

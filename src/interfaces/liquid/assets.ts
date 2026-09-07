@@ -16,6 +16,7 @@ interface AssetStats {
 
 export interface AssetsInstance {
   getAsset: (params: { asset_id: string }) => Promise<Asset>;
+  getAssets: (params: { asset_ids: string[] }) => Promise<Asset[]>;
   getAssetIcon: (params: { asset_id: string }) => Promise<unknown>;
   getAssetTxs: (params: {
     asset_id: string;
