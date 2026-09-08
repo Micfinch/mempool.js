@@ -16,6 +16,7 @@ Interface to access Liquid APIs.
   - [Get Address Txs Utxo](#get-address-txs-utxo)
 - Assets
   - [Get Asset](#get-asset)
+  - [Get Assets](#get-assets)
   - [Get Asset Icon](#get-asset-icon)
   - [Get Asset Txs](#get-asset-txs)
   - [Get Asset Supply](#get-asset-supply)
@@ -183,6 +184,30 @@ const asset_id =
 
 const asset = await assets.getAsset({ asset_id });
 console.log(asset);
+```
+
+### **Get Assets**
+
+Returns information for multiple Liquid assets in a single helper call.
+
+**Parameters:**
+
+- {string[]} asset_ids
+
+[ [NodeJS Example](examples/nodejs/liquid/assets.ts) ] [ [HTML Example](examples/html/liquid/assets.html) ] [ [Top](#features) ]
+
+```js
+const {
+  liquid: { assets },
+} = mempoolJS();
+
+const asset_ids = [
+  '6f0279e9ed041c3d710a9f57d0c02928416460c4b722ae3457a11eec381c526d',
+  'a0c358a0f6947864af3a06f3f6a2aeb304df7fd95c922f2f22d7412399ce7691',
+];
+
+const collectedAssets = await assets.getAssets({ asset_ids });
+console.log(collectedAssets);
 ```
 
 ### **Get Asset Txs**
