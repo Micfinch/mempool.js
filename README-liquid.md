@@ -189,6 +189,8 @@ console.log(asset);
 ### **Get Assets**
 
 Returns information for multiple Liquid assets in a single helper call.
+If `asset_ids` is empty, this helper returns `[]` without making API requests.
+It throws a `TypeError` when `asset_ids` is not an array of non-empty strings.
 
 **Parameters:**
 
