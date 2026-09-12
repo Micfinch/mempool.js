@@ -210,6 +210,43 @@ const collectedAssets = await assets.getAssets({ asset_ids });
 console.log(collectedAssets);
 ```
 
+### **Get Asset Icon**
+
+Returns the icon for a Liquid asset.
+
+**Parameters:**
+
+- {string} asset_id
+
+[ [Top](#features) ]
+
+```js
+const {
+  liquid: { assets },
+} = mempoolJS();
+
+const asset_id =
+  '6f0279e9ed041c3d710a9f57d0c02928416460c4b722ae3457a11eec381c526d';
+
+const assetIcon = await assets.getAssetIcon({ asset_id });
+console.log(assetIcon);
+```
+
+### **Get Assets Icons**
+
+Returns the available Liquid asset icons.
+
+[ [Top](#features) ]
+
+```js
+const {
+  liquid: { assets },
+} = mempoolJS();
+
+const assetsIcons = await assets.getAssetsIcons();
+console.log(assetsIcons);
+```
+
 ### **Get Asset Txs**
 
 Returns transactions associated with the specified Liquid asset. For the network's native asset, returns a list of peg in, peg out, and burn transactions. For user-issued assets, returns a list of issuance, reissuance, and burn transactions. Does not include regular transactions transferring this asset.
