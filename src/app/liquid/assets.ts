@@ -8,6 +8,23 @@ export const useAssets = (api: AxiosInstance): AssetsInstance => {
   };
 
   const getAssets = async (params: { asset_ids: string[] }) => {
+    if (typeof params !== 'object' || params === null) {
+      throw new TypeError('params must be an object');
+    }
+    if (Array.isArray(params.asset_ids) === false) {
+      throw new TypeError('asset_ids must be an array');
+    }
+    if (
+      params.asset_ids.some(
+        (asset_id) =>
+          typeof asset_id !== 'string' || asset_id.trim().length === 0
+      )
+    ) {
+      throw new TypeError('asset_ids must contain non-empty strings');
+    }
+    if (params.asset_ids.length === 0) {
+      return [];
+    }
     const data = await Promise.all(
       params.asset_ids.map((asset_id) => getAsset({ asset_id }))
     );
