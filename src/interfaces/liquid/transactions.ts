@@ -23,6 +23,7 @@ export interface Vout {
   scriptpubkey_asm: string;
   scriptpubkey_type: string;
   scriptpubkey_address: string;
+  asset: string;
   value: number;
 }
 
