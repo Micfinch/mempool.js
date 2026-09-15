@@ -44,33 +44,45 @@ export const useAddresses = (api: AxiosInstance): AddressLiquidInstance => {
   };
 
   const getAddressAssetBalances = async (params: { address: string }) => {
+    if (typeof params !== 'object' || params === null) {
+      throw new TypeError('params must be an object');
+    }
+    if (typeof params.address !== 'string' || params.address.trim().length === 0) {
+      throw new TypeError('address must be a non-empty string');
+    }
+
     const utxos = await getAddressTxsUtxo(params);
 
     if (utxos.length === 0) {
       return [];
     }
 
-    const uniqueTxids = utxos.reduce((txids, { txid }) => {
-      if (txids.indexOf(txid) === -1) {
+    const txidsToFetch = utxos.reduce((txids, { txid, asset }) => {
+      if (!asset && txids.indexOf(txid) === -1) {
         txids.push(txid);
       }
       return txids;
     }, [] as string[]);
 
-    const transactions = await Promise.all(
-      uniqueTxids.map(async (txid) => {
-        const { data } = await api.get<Tx>(`/tx/${txid}`);
-        return [txid, data] as const;
-      })
-    );
-
-    const transactionMap = new Map<string, Tx>(transactions);
+    const transactionMap = new Map<string, Tx>();
+    if (txidsToFetch.length > 0) {
+      const transactions = await Promise.all(
+        txidsToFetch.map(async (txid) => {
+          const { data } = await api.get<Tx>(`/tx/${txid}`);
+          return [txid, data] as const;
+        })
+      );
+      transactions.forEach(([txid, tx]) => transactionMap.set(txid, tx));
+    }
     const balances = new Map<string, AddressAssetBalance>();
 
     utxos.forEach((utxo) => {
-      const tx = transactionMap.get(utxo.txid);
-      const txOutput = tx?.vout[utxo.vout];
-      const asset_id = utxo.asset || txOutput?.asset;
+      let asset_id = utxo.asset;
+      if (!asset_id) {
+        const tx = transactionMap.get(utxo.txid);
+        const txOutput = tx && tx.vout ? tx.vout[utxo.vout] : undefined;
+        asset_id = txOutput && txOutput.asset;
+      }
 
       if (!asset_id) {
         throw new Error(`Asset id not found for Liquid UTXO ${utxo.txid}:${utxo.vout}`);
