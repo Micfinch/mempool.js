@@ -50,8 +50,15 @@ export const useAddresses = (api: AxiosInstance): AddressLiquidInstance => {
       return [];
     }
 
+    const uniqueTxids = utxos.reduce((txids, { txid }) => {
+      if (txids.indexOf(txid) === -1) {
+        txids.push(txid);
+      }
+      return txids;
+    }, [] as string[]);
+
     const transactions = await Promise.all(
-      [...new Set(utxos.map(({ txid }) => txid))].map(async (txid) => {
+      uniqueTxids.map(async (txid) => {
         const { data } = await api.get<Tx>(`/tx/${txid}`);
         return [txid, data] as const;
       })
