@@ -14,6 +14,7 @@ Interface to access Liquid APIs.
   - [Get Address Txs Chain](#get-address-txs-chain)
   - [Get Address Txs Mempool](#get-address-txs-mempool)
   - [Get Address Txs Utxo](#get-address-txs-utxo)
+  - [Get Address Asset Balances](#get-address-asset-balances)
 - Assets
   - [Get Asset](#get-asset)
   - [Get Assets](#get-assets)
@@ -158,10 +159,35 @@ Get the list of unspent transaction outputs associated with the `address/scripth
 [ [NodeJS Example](examples/nodejs/liquid/addresses.ts) ] [ [HTML Example](examples/html/liquid/addresses.html) ] [ [Top](#features) ]
 
 ```js
-const { addresses } = mempoolJS();
+const {
+  liquid: { addresses },
+} = mempoolJS();
 
-const addressTxsUtxo = await addresses.getAddressTxsUtxo('15e10745f15593a...');
+const address = 'Go65t19hP2FuhBMYtgbdMDgdmEzNwh1i48';
+
+const addressTxsUtxo = await addresses.getAddressTxsUtxo({ address });
 console.log(addressTxsUtxo);
+```
+
+### **Get Address Asset Balances**
+
+Returns Liquid asset balances for an address by grouping its unspent outputs by asset id.
+
+**Parameters:**
+
+- {string} address
+
+[ [NodeJS Example](examples/nodejs/liquid/addresses.ts) ] [ [HTML Example](examples/html/liquid/addresses.html) ] [ [Top](#features) ]
+
+```js
+const {
+  liquid: { addresses },
+} = mempoolJS();
+
+const address = 'Go65t19hP2FuhBMYtgbdMDgdmEzNwh1i48';
+
+const addressAssetBalances = await addresses.getAddressAssetBalances({ address });
+console.log(addressAssetBalances);
 ```
 
 ### **Get Asset**

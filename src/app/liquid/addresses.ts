@@ -2,11 +2,12 @@ import { AxiosInstance } from 'axios';
 import {
   Address,
   AddressTxsUtxo,
-  AddressInstance,
-} from '../../interfaces/bitcoin/addresses';
-import { Tx } from '../../interfaces/bitcoin/transactions';
+  AddressLiquidInstance,
+  AddressAssetBalance,
+} from '../../interfaces/liquid/addresses';
+import { Tx } from '../../interfaces/liquid/transactions';
 
-export const useAddresses = (api: AxiosInstance): AddressInstance => {
+export const useAddresses = (api: AxiosInstance): AddressLiquidInstance => {
   const getAddress = async (params: { address: string }) => {
     const { data } = await api.get<Address>(`/address/${params.address}`);
     return data;
@@ -42,11 +43,63 @@ export const useAddresses = (api: AxiosInstance): AddressInstance => {
     return data;
   };
 
+  const getAddressAssetBalances = async (params: { address: string }) => {
+    const utxos = await getAddressTxsUtxo(params);
+
+    if (utxos.length === 0) {
+      return [];
+    }
+
+    const uniqueTxids = utxos.reduce((txids, { txid }) => {
+      if (txids.indexOf(txid) === -1) {
+        txids.push(txid);
+      }
+      return txids;
+    }, [] as string[]);
+
+    const transactions = await Promise.all(
+      uniqueTxids.map(async (txid) => {
+        const { data } = await api.get<Tx>(`/tx/${txid}`);
+        return [txid, data] as const;
+      })
+    );
+
+    const transactionMap = new Map<string, Tx>(transactions);
+    const balances = new Map<string, AddressAssetBalance>();
+
+    utxos.forEach((utxo) => {
+      const tx = transactionMap.get(utxo.txid);
+      const txOutput = tx?.vout[utxo.vout];
+      const asset_id = utxo.asset || txOutput?.asset;
+
+      if (!asset_id) {
+        throw new Error(`Asset id not found for Liquid UTXO ${utxo.txid}:${utxo.vout}`);
+      }
+
+      const currentBalance = balances.get(asset_id);
+
+      if (currentBalance) {
+        currentBalance.value += utxo.value;
+        currentBalance.utxo_count += 1;
+        return;
+      }
+
+      balances.set(asset_id, {
+        asset_id,
+        value: utxo.value,
+        utxo_count: 1,
+      });
+    });
+
+    return Array.from(balances.values()).sort((a, b) => b.value - a.value);
+  };
+
   return {
     getAddress,
     getAddressTxs,
     getAddressTxsChain,
     getAddressTxsMempool,
     getAddressTxsUtxo,
+    getAddressAssetBalances,
   };
 };
