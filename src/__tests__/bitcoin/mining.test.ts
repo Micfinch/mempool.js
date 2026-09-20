@@ -26,6 +26,19 @@ const run = async (name: string, fn: () => Promise<void>) => {
   }
 };
 
+const expectTypeError = async (
+  action: () => Promise<unknown>,
+  expectedMessage: string
+) => {
+  try {
+    await action();
+    throw new Error('expected action to throw');
+  } catch (error) {
+    assert.ok(error instanceof TypeError);
+    assert.strictEqual(error.message, expectedMessage);
+  }
+};
+
 const main = async () => {
   await run('listPools fetches pool metadata', async () => {
     const { api, calls, responses } = createApi();
@@ -47,6 +60,25 @@ const main = async () => {
 
     assert.deepStrictEqual(result, { pools: [] });
     assert.deepStrictEqual(calls, ['/v1/mining/pools/1w']);
+  });
+
+  await run('getPools requires a non-empty interval', async () => {
+    const { api, calls } = createApi();
+    const mining = useMining(api);
+
+    await expectTypeError(
+      () =>
+        (mining.getPools as unknown as (
+          params?: unknown
+        ) => Promise<unknown>)(undefined),
+      'params must be an object'
+    );
+    await expectTypeError(
+      () => mining.getPools({ interval: '   ' }),
+      'interval must be a non-empty string'
+    );
+
+    assert.deepStrictEqual(calls, []);
   });
 
   await run('getPool fetches a single pool summary', async () => {

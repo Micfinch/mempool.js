@@ -26,6 +26,15 @@ export const useMining = (api: AxiosInstance): MiningInstance => {
   };
 
   const getPools = async (params: { interval: string }) => {
+    if (typeof params !== 'object' || params === null) {
+      throw new TypeError('params must be an object');
+    }
+    if (
+      typeof params.interval !== 'string' ||
+      params.interval.trim().length === 0
+    ) {
+      throw new TypeError('interval must be a non-empty string');
+    }
     const { data } = await api.get<PoolsStats>(
       `/v1/mining/pools/${params.interval}`
     );
