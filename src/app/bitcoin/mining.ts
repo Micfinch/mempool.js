@@ -6,6 +6,7 @@ import {
   PoolHashrate,
   PoolInfo,
   PoolStat,
+  PoolsHashrate,
   PoolsStats,
   RewardStats,
 } from '../../interfaces/bitcoin/mining';
@@ -47,7 +48,7 @@ export const useMining = (api: AxiosInstance): MiningInstance => {
 
   const getPoolsHashrate = async (params?: { interval?: string }) => {
     const intervalPath = params?.interval ? `/${params.interval}` : '';
-    const { data } = await api.get<unknown[]>(
+    const { data } = await api.get<PoolsHashrate[]>(
       `/v1/mining/hashrate/pools${intervalPath}`
     );
     return data;

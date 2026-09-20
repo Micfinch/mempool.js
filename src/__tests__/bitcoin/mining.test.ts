@@ -113,19 +113,36 @@ const main = async () => {
     ]);
   });
 
-  await run('historical block fee and reward helpers support optional intervals', async () => {
+  await run('getHistoricalBlockFees supports optional intervals', async () => {
     const { api, calls, responses } = createApi();
     responses.set('/v1/mining/blocks/fees', [{ timestamp: 1 }]);
+    responses.set('/v1/mining/blocks/fees/1m', [{ timestamp: 2 }]);
+    const mining = useMining(api);
+
+    const latest = await mining.getHistoricalBlockFees();
+    const interval = await mining.getHistoricalBlockFees({ interval: '1m' });
+
+    assert.deepStrictEqual(latest, [{ timestamp: 1 }]);
+    assert.deepStrictEqual(interval, [{ timestamp: 2 }]);
+    assert.deepStrictEqual(calls, [
+      '/v1/mining/blocks/fees',
+      '/v1/mining/blocks/fees/1m',
+    ]);
+  });
+
+  await run('getHistoricalBlockRewards supports optional intervals', async () => {
+    const { api, calls, responses } = createApi();
+    responses.set('/v1/mining/blocks/rewards', [{ timestamp: 1 }]);
     responses.set('/v1/mining/blocks/rewards/1m', [{ timestamp: 2 }]);
     const mining = useMining(api);
 
-    const fees = await mining.getHistoricalBlockFees();
-    const rewards = await mining.getHistoricalBlockRewards({ interval: '1m' });
+    const latest = await mining.getHistoricalBlockRewards();
+    const interval = await mining.getHistoricalBlockRewards({ interval: '1m' });
 
-    assert.deepStrictEqual(fees, [{ timestamp: 1 }]);
-    assert.deepStrictEqual(rewards, [{ timestamp: 2 }]);
+    assert.deepStrictEqual(latest, [{ timestamp: 1 }]);
+    assert.deepStrictEqual(interval, [{ timestamp: 2 }]);
     assert.deepStrictEqual(calls, [
-      '/v1/mining/blocks/fees',
+      '/v1/mining/blocks/rewards',
       '/v1/mining/blocks/rewards/1m',
     ]);
   });

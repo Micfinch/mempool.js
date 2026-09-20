@@ -62,6 +62,13 @@ export interface PoolHashrate {
   share: number;
 }
 
+export interface PoolsHashrate {
+  timestamp: number;
+  avgHashRate: number;
+  share: number;
+  poolName: string;
+}
+
 export interface HistoricalBlockReward {
   timestamp: number;
   avgReward: number;
@@ -86,7 +93,7 @@ export interface MiningInstance {
   getPool: (params: { slug: string }) => Promise<PoolStat>;
   getPoolHashrate: (params: { slug: string }) => Promise<PoolHashrate[]>;
   getPoolBlocks: (params: { slug: string; height?: number }) => Promise<Block[]>;
-  getPoolsHashrate: (params?: { interval?: string }) => Promise<unknown[]>;
+  getPoolsHashrate: (params?: { interval?: string }) => Promise<PoolsHashrate[]>;
   getHistoricalBlockFees: (
     params?: { interval?: string }
   ) => Promise<HistoricalBlockFee[]>;
