@@ -42,12 +42,12 @@ const expectTypeError = async (
 const main = async () => {
   await run('listPools fetches pool metadata', async () => {
     const { api, calls, responses } = createApi();
-    responses.set('/v1/mining/pools', [{ slug: 'pool-a' }]);
+    responses.set('/v1/mining/pools', [{ slug: 'pool-a', unique_id: 7 }]);
     const mining = useMining(api);
 
     const result = await mining.listPools();
 
-    assert.deepStrictEqual(result, [{ slug: 'pool-a' }]);
+    assert.deepStrictEqual(result, [{ slug: 'pool-a', poolUniqueId: 7 }]);
     assert.deepStrictEqual(calls, ['/v1/mining/pools']);
   });
 
@@ -83,13 +83,37 @@ const main = async () => {
 
   await run('getPool fetches a single pool summary', async () => {
     const { api, calls, responses } = createApi();
-    responses.set('/v1/mining/pool/foundryusa', { pool: { slug: 'foundryusa' } });
+    responses.set('/v1/mining/pool/foundryusa', {
+      pool: { slug: 'foundryusa', unique_id: 9 },
+    });
     const mining = useMining(api);
 
     const result = await mining.getPool({ slug: 'foundryusa' });
 
-    assert.deepStrictEqual(result, { pool: { slug: 'foundryusa' } });
+    assert.deepStrictEqual(result, {
+      pool: { slug: 'foundryusa', poolUniqueId: 9 },
+    });
     assert.deepStrictEqual(calls, ['/v1/mining/pool/foundryusa']);
+  });
+
+  await run('pool slug methods require a non-empty slug', async () => {
+    const { api, calls } = createApi();
+    const mining = useMining(api);
+
+    await expectTypeError(
+      () => mining.getPool({ slug: '   ' }),
+      'slug must be a non-empty string'
+    );
+    await expectTypeError(
+      () => mining.getPoolHashrate({ slug: '' }),
+      'slug must be a non-empty string'
+    );
+    await expectTypeError(
+      () => mining.getPoolBlocks({ slug: ' ' }),
+      'slug must be a non-empty string'
+    );
+
+    assert.deepStrictEqual(calls, []);
   });
 
   await run('getPoolHashrate fetches hashrate history for a pool', async () => {
@@ -202,6 +226,22 @@ const main = async () => {
       '/v1/mining/reward-stats',
       '/v1/mining/reward-stats/1008',
     ]);
+  });
+
+  await run('getRewardStats rejects invalid blockCount values', async () => {
+    const { api, calls } = createApi();
+    const mining = useMining(api);
+
+    await expectTypeError(
+      () => mining.getRewardStats({ blockCount: -1 }),
+      'blockCount must be a positive integer'
+    );
+    await expectTypeError(
+      () => mining.getRewardStats({ blockCount: 1.5 }),
+      'blockCount must be a positive integer'
+    );
+
+    assert.deepStrictEqual(calls, []);
   });
 };
 
