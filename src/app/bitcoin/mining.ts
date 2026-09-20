@@ -13,6 +13,13 @@ import {
 import { Block } from '../../interfaces/bitcoin/blocks';
 
 export const useMining = (api: AxiosInstance): MiningInstance => {
+  type PoolsHashrateResponse = {
+    timestamp: number;
+    avgHashRate: number;
+    share: number;
+    poolName: string;
+  };
+
   const listPools = async () => {
     const { data } = await api.get<PoolInfo[]>(`/v1/mining/pools`);
     return data;
@@ -48,10 +55,13 @@ export const useMining = (api: AxiosInstance): MiningInstance => {
 
   const getPoolsHashrate = async (params?: { interval?: string }) => {
     const intervalPath = params?.interval ? `/${params.interval}` : '';
-    const { data } = await api.get<PoolsHashrate[]>(
+    const { data } = await api.get<PoolsHashrateResponse[]>(
       `/v1/mining/hashrate/pools${intervalPath}`
     );
-    return data;
+    return data.map(({ avgHashRate, ...entry }) => ({
+      ...entry,
+      avgHashrate: avgHashRate,
+    }));
   };
 
   const getHistoricalBlockFees = async (params?: { interval?: string }) => {

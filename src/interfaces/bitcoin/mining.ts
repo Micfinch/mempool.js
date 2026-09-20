@@ -9,7 +9,7 @@ export interface PoolInfo {
   emptyBlocks: number;
   slug: string;
   poolUniqueId: number;
-  unique_id: number;
+  unique_id?: number;
 }
 
 export interface SinglePoolStats {
@@ -64,7 +64,7 @@ export interface PoolHashrate {
 
 export interface PoolsHashrate {
   timestamp: number;
-  avgHashRate: number;
+  avgHashrate: number;
   share: number;
   poolName: string;
 }

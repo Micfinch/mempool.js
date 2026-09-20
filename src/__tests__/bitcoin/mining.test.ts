@@ -98,15 +98,23 @@ const main = async () => {
 
   await run('getPoolsHashrate supports optional intervals', async () => {
     const { api, calls, responses } = createApi();
-    responses.set('/v1/mining/hashrate/pools', [{ timestamp: 1 }]);
-    responses.set('/v1/mining/hashrate/pools/3d', [{ timestamp: 2 }]);
+    responses.set('/v1/mining/hashrate/pools', [
+      { timestamp: 1, avgHashRate: 10, share: 0.1, poolName: 'Pool A' },
+    ]);
+    responses.set('/v1/mining/hashrate/pools/3d', [
+      { timestamp: 2, avgHashRate: 20, share: 0.2, poolName: 'Pool B' },
+    ]);
     const mining = useMining(api);
 
     const latest = await mining.getPoolsHashrate();
     const interval = await mining.getPoolsHashrate({ interval: '3d' });
 
-    assert.deepStrictEqual(latest, [{ timestamp: 1 }]);
-    assert.deepStrictEqual(interval, [{ timestamp: 2 }]);
+    assert.deepStrictEqual(latest, [
+      { timestamp: 1, avgHashrate: 10, share: 0.1, poolName: 'Pool A' },
+    ]);
+    assert.deepStrictEqual(interval, [
+      { timestamp: 2, avgHashrate: 20, share: 0.2, poolName: 'Pool B' },
+    ]);
     assert.deepStrictEqual(calls, [
       '/v1/mining/hashrate/pools',
       '/v1/mining/hashrate/pools/3d',
