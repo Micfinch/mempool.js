@@ -32,6 +32,16 @@ Interface to access Bitcoin `mainet`, `testnet`, `signet` APIs.
   - [Get Blocks Tip Hash](#get-blocks-tip-hash)
 - Difficulty
   - [Get Difficulty Adjustment](#get-difficulty-adjustment)
+- Mining
+  - [List Pools](#list-pools)
+  - [Get Pools](#get-pools)
+  - [Get Pool](#get-pool)
+  - [Get Pool Hashrate](#get-pool-hashrate)
+  - [Get Pool Blocks](#get-pool-blocks)
+  - [Get Pools Hashrate](#get-pools-hashrate)
+  - [Get Historical Block Fees](#get-historical-block-fees)
+  - [Get Historical Block Rewards](#get-historical-block-rewards)
+  - [Get Reward Stats](#get-reward-stats)
 - Fees
   - [Get Fees Recommended](#get-fees-recommended)
   - [Get Fees Mempool Blocks](#get-fees-mempool-blocks)
@@ -418,6 +428,174 @@ const {
 
 const difficultyAdjustment = await difficulty.getDifficultyAdjustment();
 console.log(difficultyAdjustment);
+```
+
+### **List Pools**
+
+Returns the available mining pools metadata.
+
+[ [NodeJS Example](examples/nodejs/bitcoin/mining.ts) ] [ [Top](#features) ]
+
+```js
+const {
+  bitcoin: { mining },
+} = mempoolJS();
+
+const pools = await mining.listPools();
+console.log(pools);
+```
+
+### **Get Pools**
+
+Returns mining pool statistics for the requested interval.
+
+**Parameters:**
+
+- {string} interval
+
+[ [NodeJS Example](examples/nodejs/bitcoin/mining.ts) ] [ [Top](#features) ]
+
+```js
+const {
+  bitcoin: { mining },
+} = mempoolJS();
+
+const pools = await mining.getPools({ interval: '1w' });
+console.log(pools);
+```
+
+### **Get Pool**
+
+Returns summary statistics for a mining pool.
+
+**Parameters:**
+
+- {string} slug
+
+[ [NodeJS Example](examples/nodejs/bitcoin/mining.ts) ] [ [Top](#features) ]
+
+```js
+const {
+  bitcoin: { mining },
+} = mempoolJS();
+
+const pool = await mining.getPool({ slug: 'foundryusa' });
+console.log(pool);
+```
+
+### **Get Pool Hashrate**
+
+Returns historical hashrate data for a mining pool.
+
+**Parameters:**
+
+- {string} slug
+
+[ [NodeJS Example](examples/nodejs/bitcoin/mining.ts) ] [ [Top](#features) ]
+
+```js
+const {
+  bitcoin: { mining },
+} = mempoolJS();
+
+const hashrate = await mining.getPoolHashrate({ slug: 'foundryusa' });
+console.log(hashrate);
+```
+
+### **Get Pool Blocks**
+
+Returns recent blocks mined by a pool, optionally starting from a block height.
+
+**Parameters:**
+
+- {string} slug
+- {number} height (optional)
+
+[ [NodeJS Example](examples/nodejs/bitcoin/mining.ts) ] [ [Top](#features) ]
+
+```js
+const {
+  bitcoin: { mining },
+} = mempoolJS();
+
+const blocks = await mining.getPoolBlocks({ slug: 'foundryusa' });
+console.log(blocks);
+```
+
+### **Get Pools Hashrate**
+
+Returns hashrate data for mining pools for an optional interval.
+
+**Parameters:**
+
+- {string} interval (optional)
+
+[ [NodeJS Example](examples/nodejs/bitcoin/mining.ts) ] [ [Top](#features) ]
+
+```js
+const {
+  bitcoin: { mining },
+} = mempoolJS();
+
+const poolsHashrate = await mining.getPoolsHashrate({ interval: '1m' });
+console.log(poolsHashrate);
+```
+
+### **Get Historical Block Fees**
+
+Returns historical mined block fee data for an optional interval.
+
+**Parameters:**
+
+- {string} interval (optional)
+
+[ [NodeJS Example](examples/nodejs/bitcoin/mining.ts) ] [ [Top](#features) ]
+
+```js
+const {
+  bitcoin: { mining },
+} = mempoolJS();
+
+const fees = await mining.getHistoricalBlockFees({ interval: '1m' });
+console.log(fees);
+```
+
+### **Get Historical Block Rewards**
+
+Returns historical mined block reward data for an optional interval.
+
+**Parameters:**
+
+- {string} interval (optional)
+
+[ [NodeJS Example](examples/nodejs/bitcoin/mining.ts) ] [ [Top](#features) ]
+
+```js
+const {
+  bitcoin: { mining },
+} = mempoolJS();
+
+const rewards = await mining.getHistoricalBlockRewards({ interval: '1m' });
+console.log(rewards);
+```
+
+### **Get Reward Stats**
+
+Returns aggregate reward, fee, and transaction totals for a recent block window.
+
+**Parameters:**
+
+- {number} blockCount (optional, defaults to 144)
+
+[ [NodeJS Example](examples/nodejs/bitcoin/mining.ts) ] [ [Top](#features) ]
+
+```js
+const {
+  bitcoin: { mining },
+} = mempoolJS();
+
+const rewardStats = await mining.getRewardStats();
+console.log(rewardStats);
 ```
 
 ### **Get Fees Recommended**
