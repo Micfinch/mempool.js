@@ -89,6 +89,12 @@ export const useMining = (api: AxiosInstance): MiningInstance => {
       throw new TypeError('params must be an object');
     }
     validateNonEmptyString(params.slug, 'slug');
+    if (
+      typeof params.height !== 'undefined' &&
+      (Number.isInteger(params.height) === false || params.height <= 0)
+    ) {
+      throw new TypeError('height must be a positive integer');
+    }
     const heightPath =
       typeof params.height === 'number' ? `/${params.height}` : '';
     const { data } = await api.get<Block[]>(

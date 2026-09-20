@@ -152,6 +152,22 @@ const main = async () => {
     assert.deepStrictEqual(calls, ['/v1/mining/pool/spiderpool/blocks/900000']);
   });
 
+  await run('getPoolBlocks rejects invalid heights', async () => {
+    const { api, calls } = createApi();
+    const mining = useMining(api);
+
+    await expectTypeError(
+      () => mining.getPoolBlocks({ slug: 'spiderpool', height: -1 }),
+      'height must be a positive integer'
+    );
+    await expectTypeError(
+      () => mining.getPoolBlocks({ slug: 'spiderpool', height: 1.5 }),
+      'height must be a positive integer'
+    );
+
+    assert.deepStrictEqual(calls, []);
+  });
+
   await run('getPoolsHashrate supports optional intervals', async () => {
     const { api, calls, responses } = createApi();
     responses.set('/v1/mining/hashrate/pools', [
