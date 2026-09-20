@@ -90,9 +90,10 @@ export const useMining = (api: AxiosInstance): MiningInstance => {
   };
 
   const getRewardStats = async (params?: { blockCount?: number }) => {
-    const blockCount = params?.blockCount ?? 144;
+    const blockCountPath =
+      typeof params?.blockCount === 'number' ? `/${params.blockCount}` : '';
     const { data } = await api.get<RewardStats>(
-      `/v1/mining/reward-stats/${blockCount}`
+      `/v1/mining/reward-stats${blockCountPath}`
     );
     return data;
   };

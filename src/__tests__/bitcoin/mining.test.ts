@@ -187,9 +187,9 @@ const main = async () => {
     ]);
   });
 
-  await run('getRewardStats defaults to 144 blocks and accepts overrides', async () => {
+  await run('getRewardStats omits blockCount when not provided and accepts overrides', async () => {
     const { api, calls, responses } = createApi();
-    responses.set('/v1/mining/reward-stats/144', { totalReward: 1 });
+    responses.set('/v1/mining/reward-stats', { totalReward: 1 });
     responses.set('/v1/mining/reward-stats/1008', { totalReward: 2 });
     const mining = useMining(api);
 
@@ -199,7 +199,7 @@ const main = async () => {
     assert.deepStrictEqual(latest, { totalReward: 1 });
     assert.deepStrictEqual(weekly, { totalReward: 2 });
     assert.deepStrictEqual(calls, [
-      '/v1/mining/reward-stats/144',
+      '/v1/mining/reward-stats',
       '/v1/mining/reward-stats/1008',
     ]);
   });
