@@ -1,5 +1,11 @@
 import { MempoolConfig, MempoolReturn } from './interfaces/index';
+import {
+  MempoolCacheController,
+  MempoolMemoryCacheStoreOptions,
+  MempoolCacheStore,
+} from './interfaces/cache';
 import { makeBitcoinAPI, makeLiquidAPI } from './services/api/index';
+import { createMemoryCacheStore } from './services/api/cache';
 
 import { useAddresses } from './app/bitcoin/addresses';
 import { useBlocks } from './app/bitcoin/blocks';
@@ -21,26 +27,47 @@ import { useWebsocket as useWebsocketLiquid } from './app/liquid/websocket';
 const hostnameEndpointDefault = 'aero.bitcoinpulse.shop';
 const networkEndpointDefault = 'main';
 
-const mempool = (
-  { hostname, network, protocol, config }: MempoolConfig = {
+interface MempoolFactory {
+  (config?: MempoolConfig): MempoolReturn;
+  default?: MempoolFactory;
+  createMemoryCacheStore: (
+    options?: MempoolMemoryCacheStoreOptions,
+  ) => MempoolCacheStore;
+}
+
+const createCacheController = (
+  controllers: MempoolCacheController[],
+): MempoolCacheController => ({
+  clear: async () => {
+    await Promise.all(controllers.map((controller) => controller.clear()));
+  },
+  delete: async (key: string) => {
+    await Promise.all(controllers.map((controller) => controller.delete(key)));
+  },
+});
+
+const mempool: MempoolFactory = (
+  { hostname, network, protocol, config, cache }: MempoolConfig = {
     hostname: hostnameEndpointDefault,
     network: networkEndpointDefault,
-  }
+  },
 ): MempoolReturn => {
   if (!hostname) hostname = hostnameEndpointDefault;
   if (!network) network = networkEndpointDefault;
 
-  const { api: apiBitcoin } = makeBitcoinAPI({
+  const { api: apiBitcoin, cache: bitcoinCache } = makeBitcoinAPI({
     hostname,
     network,
     protocol,
     config,
+    cache,
   });
-  const { api: apiLiquid } = makeLiquidAPI({
+  const { api: apiLiquid, cache: liquidCache } = makeLiquidAPI({
     hostname,
     network,
     protocol,
     config,
+    cache,
   });
   return {
     bitcoin: {
@@ -62,8 +89,10 @@ const mempool = (
       transactions: useTransactionsLiquid(apiLiquid),
       websocket: useWebsocketLiquid(hostname, network, protocol),
     },
+    cache: createCacheController([bitcoinCache, liquidCache]),
   };
 };
 
 mempool.default = mempool;
+mempool.createMemoryCacheStore = createMemoryCacheStore;
 export = mempool;

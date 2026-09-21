@@ -54,6 +54,61 @@ const { liquid } = mempoolJS({
 });
 ```
 
+### **Opt-in request caching**
+
+Caching is disabled by default. When enabled, the client caches only `GET` requests, deduplicates concurrent cache misses for the same normalized request key, respects TTL expiry, and exposes `cache.clear()` for manual invalidation.
+
+```js
+const client = mempoolJS({
+  hostname: 'mempool.space',
+  cache: {
+    enabled: true,
+    ttlMs: 30000, // 30 seconds
+    maxEntries: 100, // default bounded in-memory store size
+  },
+});
+
+const tx = await client.bitcoin.transactions.getTx({ txid: '...' });
+await client.cache.clear();
+```
+
+To use a custom or isolated store, pass your own store implementation or reuse the built-in bounded memory store factory:
+
+```js
+const privateStore = mempoolJS.createMemoryCacheStore({ maxEntries: 50 });
+
+const client = mempoolJS({
+  hostname: 'mempool.space',
+  config: {
+    headers: {
+      authorization: '******',
+    },
+  },
+  cache: {
+    enabled: true,
+    ttlMs: (request) => (request.url?.includes('/tx/') ? 60000 : 5000),
+    store: privateStore,
+    allowAuthorizedRequests: true,
+    shouldCache: (request) => request.url !== '/fees/recommended',
+  },
+});
+```
+
+Recommended starting TTLs:
+
+- Confirmed transaction or block lookups: `30s` to `5m`
+- Address, stats, and Lightning summaries: `5s` to `30s`
+- Mempool state, fees, and tips: `1s` to `5s`, or disable caching if you need the freshest view
+
+Security and behavior notes:
+
+- Requests are **not cached** unless `cache.enabled` is `true`.
+- `POST` and other non-`GET` requests are never cached.
+- Errors are never cached.
+- Requests carrying `authorization`, `cookie`, `proxy-authorization`, `set-cookie`, or `x-api-key` headers are skipped unless you explicitly provide a custom store and set `allowAuthorizedRequests: true`.
+- The default store is per-client-instance, in-memory, and bounded; use a custom store if you need cross-instance persistence.
+- Cached responses are reused client-side only. This package does not add server-side Redis, CDN, or HTTP cache headers.
+
 ### **CommonJS**
 
 Include the line below in the `head` tag of your html file.
@@ -79,7 +134,7 @@ const { bitcoin } = mempoolJS({
 const { liquid } = mempoolJS({
   protocol: 'https', // optional, defaults to http for localhost, otherwise https
   hostname: 'liquid.network',
-  network: 'liquid' // 'liquid' | 'liquidtestnet'
+  network: 'liquid', // 'liquid' | 'liquidtestnet'
 });
 ```
 
