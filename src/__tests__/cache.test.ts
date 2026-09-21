@@ -48,6 +48,10 @@ const createAdapter = (
       statusText: 'OK',
       headers: {},
       config,
+      request: {
+        callIndex,
+        url: config.url,
+      },
     };
   };
 
@@ -98,6 +102,24 @@ const main = async () => {
     assert.strictEqual(calls.length, 1);
   });
 
+  await run(
+    'non-finite TTL values fall back to the default cache TTL',
+    async () => {
+      const { adapter, calls } = createAdapter(() => ({ txid: 'fallback' }));
+      const client = mempoolJS({
+        protocol: 'https',
+        hostname: 'ttl-fallback.test',
+        cache: { enabled: true, ttlMs: Number.POSITIVE_INFINITY },
+        config: { adapter },
+      });
+
+      await client.bitcoin.transactions.getTx({ txid: 'abc' });
+      await client.bitcoin.transactions.getTx({ txid: 'abc' });
+
+      assert.strictEqual(calls.length, 1);
+    },
+  );
+
   await run('cache keys normalize equivalent query params', async () => {
     const { adapter, calls } = createAdapter(() => ({ ok: true }));
     const { api } = makeBitcoinAPI({
@@ -113,6 +135,26 @@ const main = async () => {
 
     assert.strictEqual(calls.length, 1);
   });
+
+  await run(
+    'cache hits preserve the original adapter request object',
+    async () => {
+      const { adapter } = createAdapter(() => ({ ok: true }));
+      const { api } = makeBitcoinAPI({
+        protocol: 'https',
+        hostname: 'request-shape.test',
+        network: 'main',
+        cache: { enabled: true, ttlMs: 1000 },
+        config: { adapter },
+      });
+
+      const first = await api.get('/blocks');
+      const second = await api.get('/blocks');
+
+      assert.deepStrictEqual(second.data, first.data);
+      assert.deepStrictEqual(second.request, first.request);
+    },
+  );
 
   await run('expired cache entries are refreshed after TTL', async () => {
     const { adapter, calls } = createAdapter((_config, callIndex) => ({
@@ -287,6 +329,7 @@ const main = async () => {
 
       assert.strictEqual(calls.length, 3);
 
+      assert.ok(client.cache);
       await client.cache.clear();
       await client.bitcoin.transactions.getTx({ txid: 'cached' });
 

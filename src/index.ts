@@ -41,9 +41,6 @@ const createCacheController = (
   clear: async () => {
     await Promise.all(controllers.map((controller) => controller.clear()));
   },
-  delete: async (key: string) => {
-    await Promise.all(controllers.map((controller) => controller.delete(key)));
-  },
 });
 
 const mempool: MempoolFactory = (
@@ -69,7 +66,7 @@ const mempool: MempoolFactory = (
     config,
     cache,
   });
-  return {
+  const client: MempoolReturn = {
     bitcoin: {
       addresses: useAddresses(apiBitcoin),
       blocks: useBlocks(apiBitcoin),
@@ -89,8 +86,13 @@ const mempool: MempoolFactory = (
       transactions: useTransactionsLiquid(apiLiquid),
       websocket: useWebsocketLiquid(hostname, network, protocol),
     },
-    cache: createCacheController([bitcoinCache, liquidCache]),
   };
+
+  if (cache && cache.enabled === true) {
+    client.cache = createCacheController([bitcoinCache, liquidCache]);
+  }
+
+  return client;
 };
 
 mempool.default = mempool;

@@ -14,7 +14,10 @@ export interface MempoolCacheRequest {
 
 export interface MempoolCacheEntry {
   expiresAt: number;
-  response: Pick<AxiosResponse, 'data' | 'headers' | 'status' | 'statusText'>;
+  response: Pick<
+    AxiosResponse,
+    'data' | 'headers' | 'status' | 'statusText' | 'request'
+  >;
 }
 
 export interface MempoolCacheStore {
@@ -40,5 +43,4 @@ export interface MempoolCacheConfig {
 
 export interface MempoolCacheController {
   clear: () => Promise<void>;
-  delete: (key: string) => Promise<void>;
 }

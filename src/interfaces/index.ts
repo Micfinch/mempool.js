@@ -42,5 +42,5 @@ export interface MempoolReturn {
     transactions: TxLiquidInstance;
     websocket: WsLiquidInstance;
   };
-  cache: MempoolCacheController;
+  cache?: MempoolCacheController;
 }

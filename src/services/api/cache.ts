@@ -24,18 +24,6 @@ const SENSITIVE_HEADERS = [
   'x-api-key',
 ];
 
-const hashString = (value: string): string => {
-  let hash = 2166136261;
-
-  for (let index = 0; index < value.length; index += 1) {
-    hash ^= value.charCodeAt(index);
-    hash +=
-      (hash << 1) + (hash << 4) + (hash << 7) + (hash << 8) + (hash << 24);
-  }
-
-  return (hash >>> 0).toString(16);
-};
-
 const createKeyValuePairs = (
   value: unknown,
   prefix = '',
@@ -113,12 +101,36 @@ const normalizeHeaders = (
         ? value.join(',')
         : String(value);
 
-      accumulator[headerName] = SENSITIVE_HEADERS.includes(headerName)
-        ? `sha256:${hashString(serializedValue)}`
-        : serializedValue;
+      if (SENSITIVE_HEADERS.includes(headerName)) {
+        return accumulator;
+      }
+
+      accumulator[headerName] = serializedValue;
 
       return accumulator;
     }, {});
+};
+
+const hasSensitiveHeaders = (
+  headers: AxiosRequestConfig['headers'],
+): boolean => {
+  if (!headers) {
+    return false;
+  }
+
+  let normalizedHeaders: Record<string, unknown> = {};
+
+  if (typeof (headers as { toJSON?: () => unknown }).toJSON === 'function') {
+    normalizedHeaders = (
+      headers as { toJSON: () => Record<string, unknown> }
+    ).toJSON();
+  } else {
+    normalizedHeaders = headers as Record<string, unknown>;
+  }
+
+  return Object.keys(normalizedHeaders).some((headerName) =>
+    SENSITIVE_HEADERS.includes(headerName.toLowerCase()),
+  );
 };
 
 const normalizeUrl = (request: MempoolCacheRequest): string => {
@@ -162,16 +174,7 @@ const toCacheRequest = (config: AxiosRequestConfig): MempoolCacheRequest => ({
 });
 
 const isAuthorizedRequest = (request: MempoolCacheRequest): boolean => {
-  if (!request.headers) {
-    return false;
-  }
-
-  const headers = normalizeHeaders(request.headers);
-
-  return (
-    Object.keys(headers).some((header) => SENSITIVE_HEADERS.includes(header)) ||
-    Boolean(request.auth)
-  );
+  return hasSensitiveHeaders(request.headers) || Boolean(request.auth);
 };
 
 const createCacheKey = (
@@ -184,6 +187,7 @@ const createCacheKey = (
 
   return JSON.stringify({
     keyPrefix: keyPrefix || '',
+    baseURL: request.baseURL || '',
     method,
     responseType,
     url: normalizeUrl(request),
@@ -200,6 +204,7 @@ const cloneResponse = <T = unknown>(
   status: cached.response.status,
   statusText: cached.response.statusText,
   config,
+  request: cached.response.request,
 });
 
 const resolveTtlMs = (
@@ -211,7 +216,9 @@ const resolveTtlMs = (
   }
 
   if (typeof cacheConfig.ttlMs === 'number') {
-    return cacheConfig.ttlMs;
+    return Number.isFinite(cacheConfig.ttlMs)
+      ? cacheConfig.ttlMs
+      : DEFAULT_TTL_MS;
   }
 
   return DEFAULT_TTL_MS;
@@ -246,7 +253,7 @@ const shouldCacheRequest = (
 export const createMemoryCacheStore = (
   options: MempoolMemoryCacheStoreOptions = {},
 ): MempoolCacheStore => {
-  const maxEntries = options.maxEntries || DEFAULT_MAX_ENTRIES;
+  const maxEntries = options.maxEntries ?? DEFAULT_MAX_ENTRIES;
   const entries = new Map<string, MempoolCacheEntry>();
 
   return {
@@ -259,13 +266,13 @@ export const createMemoryCacheStore = (
       entries.set(key, value);
 
       while (entries.size > maxEntries) {
-        const oldestKey = entries.keys().next().value;
+        const oldestEntry = entries.keys().next();
 
-        if (!oldestKey) {
+        if (oldestEntry.done) {
           break;
         }
 
-        entries.delete(oldestKey);
+        entries.delete(oldestEntry.value);
       }
     },
     delete: async (key: string) => {
@@ -284,7 +291,6 @@ export const applyCache = (
   if (!cacheConfig || cacheConfig.enabled !== true) {
     return {
       clear: async () => undefined,
-      delete: async () => undefined,
     };
   }
 
@@ -331,15 +337,20 @@ export const applyCache = (
 
     const pendingRequest = baseAdapter(config)
       .then(async (response) => {
-        await store.set(cacheKey, {
-          expiresAt: Date.now() + ttlMs,
-          response: {
-            data: response.data,
-            headers: response.headers,
-            status: response.status,
-            statusText: response.statusText,
-          },
-        });
+        try {
+          await store.set(cacheKey, {
+            expiresAt: Date.now() + ttlMs,
+            response: {
+              data: response.data,
+              headers: response.headers,
+              status: response.status,
+              statusText: response.statusText,
+              request: response.request,
+            },
+          });
+        } catch (_error) {
+          // Ignore cache-write failures so successful network responses still resolve.
+        }
 
         return response;
       })
@@ -355,10 +366,6 @@ export const applyCache = (
     clear: async () => {
       inflight.clear();
       await store.clear();
-    },
-    delete: async (key: string) => {
-      inflight.delete(key);
-      await store.delete(key);
     },
   };
 };
