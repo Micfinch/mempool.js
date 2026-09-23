@@ -91,6 +91,7 @@ const { liquid } = mempoolJS({
   - [Addresses](./README-bitcoin.md#get-address)
   - [Blocks](./README-bitcoin.md#get-blocks)
   - [Difficulty Adjustment](./README-bitcoin.md#get-difficulty-adjustment)
+  - [Mining](./README-bitcoin.md#get-mining-pools)
   - [Fees](./README-bitcoin.md#get-fees)
   - [Lightning](./README-bitcoin.md#get-network-stats)
   - [Mempool](./README-bitcoin.md#get-mempool)

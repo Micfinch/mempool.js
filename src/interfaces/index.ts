@@ -3,6 +3,7 @@ import { BlockInstance } from './bitcoin/blocks';
 import { DifficultyInstance } from './bitcoin/difficulty';
 import { FeeInstance } from './bitcoin/fees';
 import { LightningInstance } from './bitcoin/lightning';
+import { MiningInstance } from './bitcoin/mining';
 import { MempoolInstance } from './bitcoin/mempool';
 import { TxInstance } from './bitcoin/transactions';
 import { WsInstance } from './bitcoin/websockets';
@@ -27,6 +28,7 @@ export interface MempoolReturn {
     difficulty: DifficultyInstance;
     fees: FeeInstance;
     lightning: LightningInstance
+    mining: MiningInstance;
     mempool: MempoolInstance;
     transactions: TxInstance;
     websocket: WsInstance;

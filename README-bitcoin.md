@@ -33,6 +33,12 @@ Interface to access Bitcoin `mainet`, `testnet`, `signet` APIs.
   - [Get Blocks Tip Hash](#get-blocks-tip-hash)
 - Difficulty
   - [Get Difficulty Adjustment](#get-difficulty-adjustment)
+- Mining
+  - [Get Mining Pools](#get-mining-pools)
+  - [Get Mining Pool Stats](#get-mining-pool-stats)
+  - [Get Mining Pool](#get-mining-pool)
+  - [Get Reward Stats](#get-reward-stats)
+  - [Get Historical Block Rewards](#get-historical-block-rewards)
 - Fees
   - [Get Fees Recommended](#get-fees-recommended)
   - [Get Fees Mempool Blocks](#get-fees-mempool-blocks)
@@ -444,6 +450,97 @@ const {
 
 const difficultyAdjustment = await difficulty.getDifficultyAdjustment();
 console.log(difficultyAdjustment);
+```
+
+### **Get Mining Pools**
+
+Returns the known mining pool catalogue with each pool's display name, slug, and unique ID.
+
+[ [NodeJS Example](examples/nodejs/bitcoin/mining.ts) ] [ [HTML Example](examples/html/bitcoin/mining.html) ] [ [Top](#features) ]
+
+```js
+const {
+  bitcoin: { mining },
+} = mempoolJS();
+
+const pools = await mining.listPools();
+console.log(pools);
+```
+
+### **Get Mining Pool Stats**
+
+Returns ranked pool statistics for the requested mining interval. If no interval is provided, the API returns the aggregate `all` window.
+
+**Parameters:**
+
+- {string} params.interval
+
+[ [NodeJS Example](examples/nodejs/bitcoin/mining.ts) ] [ [HTML Example](examples/html/bitcoin/mining.html) ] [ [Top](#features) ]
+
+```js
+const {
+  bitcoin: { mining },
+} = mempoolJS();
+
+const poolsStats = await mining.getPoolsStats({ interval: '1w' });
+console.log(poolsStats);
+```
+
+### **Get Mining Pool**
+
+Returns detailed stats for a single mining pool, including its block share and total rewards.
+
+**Parameters:**
+
+- {string} params.slug
+
+[ [NodeJS Example](examples/nodejs/bitcoin/mining.ts) ] [ [HTML Example](examples/html/bitcoin/mining.html) ] [ [Top](#features) ]
+
+```js
+const {
+  bitcoin: { mining },
+} = mempoolJS();
+
+const pool = await mining.getPool({ slug: 'foundry-usa' });
+console.log(pool);
+```
+
+### **Get Reward Stats**
+
+Returns the total block rewards, total fees, and total transaction count over the requested block window.
+
+**Parameters:**
+
+- {number} params.blockCount
+
+[ [NodeJS Example](examples/nodejs/bitcoin/mining.ts) ] [ [HTML Example](examples/html/bitcoin/mining.html) ] [ [Top](#features) ]
+
+```js
+const {
+  bitcoin: { mining },
+} = mempoolJS();
+
+const rewardStats = await mining.getRewardStats({ blockCount: 144 });
+console.log(rewardStats);
+```
+
+### **Get Historical Block Rewards**
+
+Returns historical block reward totals for the requested mining interval.
+
+**Parameters:**
+
+- {string} params.interval
+
+[ [NodeJS Example](examples/nodejs/bitcoin/mining.ts) ] [ [HTML Example](examples/html/bitcoin/mining.html) ] [ [Top](#features) ]
+
+```js
+const {
+  bitcoin: { mining },
+} = mempoolJS();
+
+const blockRewards = await mining.getHistoricalBlockRewards({ interval: '1m' });
+console.log(blockRewards);
 ```
 
 ### **Get Fees Recommended**

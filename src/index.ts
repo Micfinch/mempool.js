@@ -6,6 +6,7 @@ import { useBlocks } from './app/bitcoin/blocks';
 import { useDifficulty } from './app/bitcoin/difficulty';
 import { useFees } from './app/bitcoin/fees';
 import { useLightning } from './app/bitcoin/lightning';
+import { useMining } from './app/bitcoin/mining';
 import { useMempool } from './app/bitcoin/mempool';
 import { useTransactions } from './app/bitcoin/transactions';
 import { useWebsocket } from './app/bitcoin/websocket';
@@ -49,6 +50,7 @@ const mempool = (
       difficulty: useDifficulty(apiBitcoin),
       fees: useFees(apiBitcoin),
       lightning: useLightning(apiBitcoin),
+      mining: useMining(apiBitcoin),
       mempool: useMempool(apiBitcoin),
       transactions: useTransactions(apiBitcoin),
       websocket: useWebsocket(hostname, network, protocol),
