@@ -21,12 +21,24 @@ export interface AddressTxsUtxo {
   value: number;
 }
 
-export type AddressParam = { address: string } | string;
+export interface AddressParams {
+  address: string;
+}
+
+export interface AddressBalance {
+  address: string;
+  confirmed: number;
+  unconfirmed: number;
+  total: number;
+}
+
+export type AddressParam = AddressParams | string;
 
 export interface AddressInstance {
-  getAddress: (params: { address: string }) => Promise<Address>;
+  getAddress: (params: AddressParam) => Promise<Address>;
   getAddressTxs: (params: { address: string, after_txid?: string }) => Promise<Tx[]>;
   getAddressTxsChain: (params: { address: string }) => Promise<Tx[]>;
   getAddressTxsMempool: (params: { address: string }) => Promise<Tx[]>;
   getAddressTxsUtxo: (params: AddressParam) => Promise<AddressTxsUtxo[]>;
+  getAddressBalance: (params: AddressParam) => Promise<AddressBalance>;
 }
