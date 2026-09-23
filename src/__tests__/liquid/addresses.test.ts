@@ -137,6 +137,108 @@ const main = async () => {
       /Asset id not found for Liquid UTXO tx-1:0/
     );
   });
+
+  await run('getAddressAssets returns [] for empty utxo list', async () => {
+    const { api, calls, responses } = createApi();
+    responses.set('/address/liquid-address/utxo', []);
+    const addresses = useAddresses(api);
+
+    const result = await addresses.getAddressAssets({
+      address: 'liquid-address',
+    });
+
+    assert.deepStrictEqual(result, []);
+    assert.deepStrictEqual(calls, ['/address/liquid-address/utxo']);
+  });
+
+  await run('getAddressAssets returns balances with asset details', async () => {
+    const { api, calls, responses } = createApi();
+    responses.set('/address/liquid-address/utxo', [
+      { txid: 'tx-1', vout: 0, value: 7, asset: 'asset-a', status: {} },
+      { txid: 'tx-2', vout: 0, value: 3, asset: 'asset-b', status: {} },
+      { txid: 'tx-3', vout: 1, value: 5, asset: 'asset-a', status: {} },
+    ]);
+    responses.set('/asset/asset-a', {
+      asset_id: 'asset-a',
+      chain_stats: {
+        tx_count: 1,
+        peg_in_count: 0,
+        peg_in_amount: 0,
+        peg_out_count: 0,
+        peg_out_amount: 0,
+        burn_count: 0,
+        burned_amount: 0,
+      },
+      mempool_stats: {
+        tx_count: 0,
+        peg_in_count: 0,
+        peg_in_amount: 0,
+        peg_out_count: 0,
+        peg_out_amount: 0,
+        burn_count: 0,
+        burned_amount: 0,
+      },
+    });
+    responses.set('/asset/asset-b', {
+      asset_id: 'asset-b',
+      chain_stats: {
+        tx_count: 2,
+        peg_in_count: 0,
+        peg_in_amount: 0,
+        peg_out_count: 0,
+        peg_out_amount: 0,
+        burn_count: 0,
+        burned_amount: 0,
+      },
+      mempool_stats: {
+        tx_count: 1,
+        peg_in_count: 0,
+        peg_in_amount: 0,
+        peg_out_count: 0,
+        peg_out_amount: 0,
+        burn_count: 0,
+        burned_amount: 0,
+      },
+    });
+    const addresses = useAddresses(api);
+
+    const result = await addresses.getAddressAssets({
+      address: 'liquid-address',
+    });
+
+    assert.deepStrictEqual(result, [
+      {
+        asset_id: 'asset-a',
+        value: 12,
+        utxo_count: 2,
+        asset: responses.get('/asset/asset-a'),
+      },
+      {
+        asset_id: 'asset-b',
+        value: 3,
+        utxo_count: 1,
+        asset: responses.get('/asset/asset-b'),
+      },
+    ]);
+    assert.deepStrictEqual(calls, [
+      '/address/liquid-address/utxo',
+      '/asset/asset-a',
+      '/asset/asset-b',
+    ]);
+  });
+
+  await run('getAddressAssets throws when asset details cannot be loaded', async () => {
+    const { api, responses } = createApi();
+    responses.set('/address/liquid-address/utxo', [
+      { txid: 'tx-1', vout: 0, value: 7, asset: 'asset-a', status: {} },
+    ]);
+    const addresses = useAddresses(api);
+
+    await assert.rejects(
+      addresses.getAddressAssets({ address: 'liquid-address' }),
+      /Asset details not found for Liquid asset asset-a/
+    );
+  });
 };
 
 main().catch((error) => {
