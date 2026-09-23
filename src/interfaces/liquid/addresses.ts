@@ -33,6 +33,14 @@ export interface AddressAsset extends AddressAssetBalance {
   asset: Asset;
 }
 
+export interface AddressSpendableUtxo extends AddressTxsUtxo {
+  asset_id: string;
+}
+
+export interface AddressSpendableAsset extends AddressAsset {
+  utxos: AddressSpendableUtxo[];
+}
+
 export interface AddressLiquidInstance {
   getAddress: (params: { address: string }) => Promise<Address>;
   getAddressTxs: (params: { address: string, after_txid?: string }) => Promise<Tx[]>;
@@ -41,4 +49,5 @@ export interface AddressLiquidInstance {
   getAddressTxsUtxo: (params: { address: string }) => Promise<AddressTxsUtxo[]>;
   getAddressAssetBalances: (params: { address: string }) => Promise<AddressAssetBalance[]>;
   getAddressAssets: (params: { address: string }) => Promise<AddressAsset[]>;
+  getSpendableAssets: (params: { address: string }) => Promise<AddressSpendableAsset[]>;
 }

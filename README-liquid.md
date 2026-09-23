@@ -212,6 +212,27 @@ const addressAssets = await addresses.getAddressAssets({ address });
 console.log(addressAssets);
 ```
 
+### **Get Spendable Assets**
+
+Returns Liquid spendable UTXOs grouped by asset together with each asset record.
+
+**Parameters:**
+
+- {string} address
+
+[ [NodeJS Example](examples/nodejs/liquid/addresses.ts) ] [ [HTML Example](examples/html/liquid/addresses.html) ] [ [Top](#features) ]
+
+```js
+const {
+  liquid: { addresses },
+} = mempoolJS();
+
+const address = 'Go65t19hP2FuhBMYtgbdMDgdmEzNwh1i48';
+
+const spendableAssets = await addresses.getSpendableAssets({ address });
+console.log(spendableAssets);
+```
+
 ### **Get Asset**
 
 Returns information about a Liquid asset.
