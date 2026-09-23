@@ -23,6 +23,10 @@ export interface AddressTxsUtxo {
   asset?: string;
 }
 
+export interface AddressParams {
+  address: string;
+}
+
 export interface AddressAssetBalance {
   asset_id: string;
   value: number;
@@ -41,13 +45,15 @@ export interface AddressSpendableAsset extends AddressAsset {
   utxos: AddressSpendableUtxo[];
 }
 
+export type AddressParam = AddressParams | string;
+
 export interface AddressLiquidInstance {
-  getAddress: (params: { address: string }) => Promise<Address>;
+  getAddress: (params: AddressParam) => Promise<Address>;
   getAddressTxs: (params: { address: string, after_txid?: string }) => Promise<Tx[]>;
   getAddressTxsChain: (params: { address: string }) => Promise<Tx[]>;
   getAddressTxsMempool: (params: { address: string }) => Promise<Tx[]>;
-  getAddressTxsUtxo: (params: { address: string }) => Promise<AddressTxsUtxo[]>;
-  getAddressAssetBalances: (params: { address: string }) => Promise<AddressAssetBalance[]>;
-  getAddressAssets: (params: { address: string }) => Promise<AddressAsset[]>;
-  getSpendableAssets: (params: { address: string }) => Promise<AddressSpendableAsset[]>;
+  getAddressTxsUtxo: (params: AddressParam) => Promise<AddressTxsUtxo[]>;
+  getAddressAssetBalances: (params: AddressParam) => Promise<AddressAssetBalance[]>;
+  getAddressAssets: (params: AddressParam) => Promise<AddressAsset[]>;
+  getSpendableAssets: (params: AddressParam) => Promise<AddressSpendableAsset[]>;
 }

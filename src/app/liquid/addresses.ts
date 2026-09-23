@@ -1,6 +1,7 @@
 import { AxiosInstance } from 'axios';
 import {
   Address,
+  AddressParam,
   AddressAsset,
   AddressSpendableAsset,
   AddressSpendableUtxo,
@@ -14,9 +15,18 @@ import { useAssets } from './assets';
 export const useAddresses = (api: AxiosInstance): AddressLiquidInstance => {
   const assets = useAssets(api);
 
-  const normalizeAddressParams = (params: { address: string }) => {
+  const normalizeAddressParams = (params: AddressParam) => {
+    if (typeof params === 'string') {
+      const address = params.trim();
+      if (address.length === 0) {
+        throw new TypeError('address must be a non-empty string');
+      }
+
+      return { address };
+    }
+
     if (typeof params !== 'object' || params === null) {
-      throw new TypeError('params must be an object');
+      throw new TypeError('params must be a string or an object');
     }
     if (typeof params.address !== 'string' || params.address.trim().length === 0) {
       throw new TypeError('address must be a non-empty string');
@@ -25,7 +35,7 @@ export const useAddresses = (api: AxiosInstance): AddressLiquidInstance => {
     return { address: params.address.trim() };
   };
 
-  const resolveSpendableUtxos = async (params: { address: string }): Promise<AddressSpendableUtxo[]> => {
+  const resolveSpendableUtxos = async (params: AddressParam): Promise<AddressSpendableUtxo[]> => {
     const utxos = await getAddressTxsUtxo(params);
 
     if (utxos.length === 0) {
@@ -98,7 +108,7 @@ export const useAddresses = (api: AxiosInstance): AddressLiquidInstance => {
     return Array.from(grouped.values()).sort((a, b) => b.value - a.value);
   };
 
-  const getAddress = async (params: { address: string }) => {
+  const getAddress = async (params: AddressParam) => {
     const { address } = normalizeAddressParams(params);
     const { data } = await api.get<Address>(`/address/${address}`);
     return data;
@@ -127,7 +137,7 @@ export const useAddresses = (api: AxiosInstance): AddressLiquidInstance => {
     return data;
   };
 
-  const getAddressTxsUtxo = async (params: { address: string }) => {
+  const getAddressTxsUtxo = async (params: AddressParam) => {
     const { address } = normalizeAddressParams(params);
     const { data } = await api.get<AddressTxsUtxo[]>(
       `/address/${address}/utxo`
@@ -135,7 +145,7 @@ export const useAddresses = (api: AxiosInstance): AddressLiquidInstance => {
     return data;
   };
 
-  const getAddressAssetBalances = async (params: { address: string }) => {
+  const getAddressAssetBalances = async (params: AddressParam) => {
     const spendableUtxos = await resolveSpendableUtxos(params);
 
     if (spendableUtxos.length === 0) {
@@ -149,7 +159,7 @@ export const useAddresses = (api: AxiosInstance): AddressLiquidInstance => {
     }));
   };
 
-  const getAddressAssets = async (params: { address: string }): Promise<AddressAsset[]> => {
+  const getAddressAssets = async (params: AddressParam): Promise<AddressAsset[]> => {
     const balances = await getAddressAssetBalances(params);
 
     if (balances.length === 0) {
@@ -176,7 +186,7 @@ export const useAddresses = (api: AxiosInstance): AddressLiquidInstance => {
     });
   };
 
-  const getSpendableAssets = async (params: { address: string }): Promise<AddressSpendableAsset[]> => {
+  const getSpendableAssets = async (params: AddressParam): Promise<AddressSpendableAsset[]> => {
     const spendableUtxos = await resolveSpendableUtxos(params);
 
     if (spendableUtxos.length === 0) {

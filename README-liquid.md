@@ -166,7 +166,7 @@ const {
 
 const address = 'Go65t19hP2FuhBMYtgbdMDgdmEzNwh1i48';
 
-const addressTxsUtxo = await addresses.getAddressTxsUtxo({ address });
+const addressTxsUtxo = await addresses.getAddressTxsUtxo(address);
 console.log(addressTxsUtxo);
 ```
 
@@ -187,7 +187,7 @@ const {
 
 const address = 'Go65t19hP2FuhBMYtgbdMDgdmEzNwh1i48';
 
-const addressAssetBalances = await addresses.getAddressAssetBalances({ address });
+const addressAssetBalances = await addresses.getAddressAssetBalances(address);
 console.log(addressAssetBalances);
 ```
 
@@ -208,7 +208,7 @@ const {
 
 const address = 'Go65t19hP2FuhBMYtgbdMDgdmEzNwh1i48';
 
-const addressAssets = await addresses.getAddressAssets({ address });
+const addressAssets = await addresses.getAddressAssets(address);
 console.log(addressAssets);
 ```
 
@@ -229,7 +229,7 @@ const {
 
 const address = 'Go65t19hP2FuhBMYtgbdMDgdmEzNwh1i48';
 
-const spendableAssets = await addresses.getSpendableAssets({ address });
+const spendableAssets = await addresses.getSpendableAssets(address);
 console.log(spendableAssets);
 ```
 
