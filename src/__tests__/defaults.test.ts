@@ -1,5 +1,5 @@
 import assert = require('assert');
-import axios = require('axios');
+import axios from 'axios';
 
 const run = async (name: string, fn: () => Promise<void>) => {
   try {
