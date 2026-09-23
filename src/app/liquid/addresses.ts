@@ -1,10 +1,12 @@
 import { AxiosInstance } from 'axios';
 import {
   Address,
+  AddressAsset,
   AddressTxsUtxo,
   AddressLiquidInstance,
   AddressAssetBalance,
 } from '../../interfaces/liquid/addresses';
+import { Asset } from '../../interfaces/liquid/assets';
 import { Tx } from '../../interfaces/liquid/transactions';
 
 export const useAddresses = (api: AxiosInstance): AddressLiquidInstance => {
@@ -106,6 +108,34 @@ export const useAddresses = (api: AxiosInstance): AddressLiquidInstance => {
     return Array.from(balances.values()).sort((a, b) => b.value - a.value);
   };
 
+  const getAddressAssets = async (params: { address: string }): Promise<AddressAsset[]> => {
+    const balances = await getAddressAssetBalances(params);
+
+    if (balances.length === 0) {
+      return [];
+    }
+
+    const assetEntries = await Promise.all(
+      balances.map(async ({ asset_id }) => {
+        const { data } = await api.get<Asset>(`/asset/${asset_id}`);
+        return [asset_id, data] as const;
+      })
+    );
+    const assetMap = new Map(assetEntries);
+
+    return balances.map((balance) => {
+      const asset = assetMap.get(balance.asset_id);
+      if (!asset) {
+        throw new Error(`Asset details not found for Liquid asset ${balance.asset_id}`);
+      }
+
+      return {
+        ...balance,
+        asset,
+      };
+    });
+  };
+
   return {
     getAddress,
     getAddressTxs,
@@ -113,5 +143,6 @@ export const useAddresses = (api: AxiosInstance): AddressLiquidInstance => {
     getAddressTxsMempool,
     getAddressTxsUtxo,
     getAddressAssetBalances,
+    getAddressAssets,
   };
 };
