@@ -6,8 +6,11 @@ const init = async () => {
     
     const address = '1wizSAYSbuyXbt9d8JV8ytm5acqq2TorC';
     
-    const myAddress = await addresses.getAddress({ address });
+    const myAddress = await addresses.getAddress(address);
     console.log(myAddress);
+
+    const addressBalance = await addresses.getAddressBalance(address);
+    console.log(addressBalance);
     
     const addressTxs = await addresses.getAddressTxs({ address });
     console.log(addressTxs);
@@ -18,7 +21,7 @@ const init = async () => {
     const addressTxsMempool = await addresses.getAddressTxsMempool({ address });
     console.log(addressTxsMempool);
     
-    const addressTxsUtxo = await addresses.getAddressTxsUtxo({ address });
+    const addressTxsUtxo = await addresses.getAddressTxsUtxo(address);
     console.log(addressTxsUtxo);
   } catch (error) {
     console.log(error);
