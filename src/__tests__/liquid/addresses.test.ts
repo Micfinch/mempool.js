@@ -70,50 +70,50 @@ const main = async () => {
       address: 'liquid-address',
     });
 
-    await run('getAddress accepts a plain address string', async () => {
-      const { api, calls, responses } = createApi();
-      const address = 'liquid-address';
-      const expected = {
-        address,
-        chain_stats: {
-          funded_txo_count: 1,
-          funded_txo_sum: 5,
-          spent_txo_count: 0,
-          spent_txo_sum: 0,
-          tx_count: 1,
-        },
-        mempool_stats: {
-          funded_txo_count: 0,
-          funded_txo_sum: 0,
-          spent_txo_count: 0,
-          spent_txo_sum: 0,
-          tx_count: 0,
-        },
-      };
-      responses.set(`/address/${address}`, expected);
-      const addresses = useAddresses(api);
-
-      const result = await addresses.getAddress(address);
-
-      assert.deepStrictEqual(result, expected);
-      assert.deepStrictEqual(calls, [`/address/${address}`]);
-    });
-
-    await run('getAddressTxsUtxo accepts a plain address string', async () => {
-      const { api, calls, responses } = createApi();
-      const address = 'liquid-address';
-      const expected = [{ txid: 'tx-1', vout: 0, value: 1, asset: 'asset-a', status: {} }];
-      responses.set(`/address/${address}/utxo`, expected);
-      const addresses = useAddresses(api);
-
-      const result = await addresses.getAddressTxsUtxo(address);
-
-      assert.deepStrictEqual(result, expected);
-      assert.deepStrictEqual(calls, [`/address/${address}/utxo`]);
-    });
-
     assert.deepStrictEqual(result, []);
     assert.deepStrictEqual(calls, ['/address/liquid-address/utxo']);
+  });
+
+  await run('getAddress accepts a plain address string', async () => {
+    const { api, calls, responses } = createApi();
+    const address = 'liquid-address';
+    const expected = {
+      address,
+      chain_stats: {
+        funded_txo_count: 1,
+        funded_txo_sum: 5,
+        spent_txo_count: 0,
+        spent_txo_sum: 0,
+        tx_count: 1,
+      },
+      mempool_stats: {
+        funded_txo_count: 0,
+        funded_txo_sum: 0,
+        spent_txo_count: 0,
+        spent_txo_sum: 0,
+        tx_count: 0,
+      },
+    };
+    responses.set(`/address/${address}`, expected);
+    const addresses = useAddresses(api);
+
+    const result = await addresses.getAddress(address);
+
+    assert.deepStrictEqual(result, expected);
+    assert.deepStrictEqual(calls, [`/address/${address}`]);
+  });
+
+  await run('getAddressTxsUtxo accepts a plain address string', async () => {
+    const { api, calls, responses } = createApi();
+    const address = 'liquid-address';
+    const expected = [{ txid: 'tx-1', vout: 0, value: 1, asset: 'asset-a', status: {} }];
+    responses.set(`/address/${address}/utxo`, expected);
+    const addresses = useAddresses(api);
+
+    const result = await addresses.getAddressTxsUtxo(address);
+
+    assert.deepStrictEqual(result, expected);
+    assert.deepStrictEqual(calls, [`/address/${address}/utxo`]);
   });
 
   await run('getAddressAssetBalances uses asset from utxo without tx fetches', async () => {
@@ -189,25 +189,25 @@ const main = async () => {
       address: 'liquid-address',
     });
 
-    await run('getAddressAssetBalances accepts a plain address string', async () => {
-      const { api, calls, responses } = createApi();
-      const address = 'liquid-address';
-      responses.set(`/address/${address}/utxo`, [
-        { txid: 'tx-1', vout: 0, value: 5, asset: 'asset-a', status: {} },
-        { txid: 'tx-2', vout: 0, value: 7, asset: 'asset-a', status: {} },
-      ]);
-      const addresses = useAddresses(api);
-
-      const result = await addresses.getAddressAssetBalances(address);
-
-      assert.deepStrictEqual(result, [
-        { asset_id: 'asset-a', value: 12, utxo_count: 2 },
-      ]);
-      assert.deepStrictEqual(calls, [`/address/${address}/utxo`]);
-    });
-
     assert.deepStrictEqual(result, []);
     assert.deepStrictEqual(calls, ['/address/liquid-address/utxo']);
+  });
+
+  await run('getAddressAssetBalances accepts a plain address string', async () => {
+    const { api, calls, responses } = createApi();
+    const address = 'liquid-address';
+    responses.set(`/address/${address}/utxo`, [
+      { txid: 'tx-1', vout: 0, value: 5, asset: 'asset-a', status: {} },
+      { txid: 'tx-2', vout: 0, value: 7, asset: 'asset-a', status: {} },
+    ]);
+    const addresses = useAddresses(api);
+
+    const result = await addresses.getAddressAssetBalances(address);
+
+    assert.deepStrictEqual(result, [
+      { asset_id: 'asset-a', value: 12, utxo_count: 2 },
+    ]);
+    assert.deepStrictEqual(calls, [`/address/${address}/utxo`]);
   });
 
   await run('getAddressAssets returns balances with asset details', async () => {
