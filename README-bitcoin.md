@@ -10,6 +10,7 @@ Interface to access Bitcoin `mainet`, `testnet`, `signet` APIs.
 
 - Addresses
   - [Get Address](#get-address)
+  - [Get Address Balance](#get-address-balance)
   - [Get Address Txs](#get-address-txs)
   - [Get Address Txs Chain](#get-address-txs-chain)
   - [Get Address Txs Mempool](#get-address-txs-mempool)
@@ -102,8 +103,29 @@ const {
 
 const address = '1wizSAYSbuyXbt9d8JV8ytm5acqq2TorC';
 
-const myAddress = await addresses.getAddress({ address });
+const myAddress = await addresses.getAddress(address);
 console.log(myAddress);
+```
+
+### **Get Address Balance**
+
+Returns a receive-address balance summary with `confirmed`, `unconfirmed`, and `total` satoshi amounts derived from the address stats response.
+
+**Parameters:**
+
+- {string} address
+
+[ [NodeJS Example](examples/nodejs/bitcoin/addresses.ts) ] [ [HTML Example](examples/html/bitcoin/addresses.html) ] [ [Top](#features) ]
+
+```js
+const {
+  bitcoin: { addresses },
+} = mempoolJS();
+
+const address = '1wizSAYSbuyXbt9d8JV8ytm5acqq2TorC';
+
+const addressBalance = await addresses.getAddressBalance(address);
+console.log(addressBalance);
 ```
 
 ### **Get Address Txs**
@@ -180,9 +202,13 @@ Get the list of unspent transaction outputs associated with the `address/scripth
 [ [NodeJS Example](examples/nodejs/bitcoin/addresses.ts) ] [ [HTML Example](examples/html/bitcoin/addresses.html) ] [ [Top](#features) ]
 
 ```js
-const { addresses } = mempoolJS();
+const {
+  bitcoin: { addresses },
+} = mempoolJS();
 
-const addressTxsUtxo = await addresses.getAddressTxsUtxo('15e10745f15593a...');
+const address = '1wizSAYSbuyXbt9d8JV8ytm5acqq2TorC';
+
+const addressTxsUtxo = await addresses.getAddressTxsUtxo(address);
 console.log(addressTxsUtxo);
 ```
 

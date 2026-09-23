@@ -15,6 +15,7 @@ Interface to access Liquid APIs.
   - [Get Address Txs Mempool](#get-address-txs-mempool)
   - [Get Address Txs Utxo](#get-address-txs-utxo)
   - [Get Address Asset Balances](#get-address-asset-balances)
+  - [Get Address Assets](#get-address-assets)
 - Assets
   - [Get Asset](#get-asset)
   - [Get Assets](#get-assets)
@@ -81,7 +82,7 @@ const {
 
 const address = 'Go65t19hP2FuhBMYtgbdMDgdmEzNwh1i48';
 
-const myAddress = await addresses.getAddress({ address });
+const myAddress = await addresses.getAddress(address);
 console.log(myAddress);
 ```
 
@@ -165,7 +166,7 @@ const {
 
 const address = 'Go65t19hP2FuhBMYtgbdMDgdmEzNwh1i48';
 
-const addressTxsUtxo = await addresses.getAddressTxsUtxo({ address });
+const addressTxsUtxo = await addresses.getAddressTxsUtxo(address);
 console.log(addressTxsUtxo);
 ```
 
@@ -186,8 +187,50 @@ const {
 
 const address = 'Go65t19hP2FuhBMYtgbdMDgdmEzNwh1i48';
 
-const addressAssetBalances = await addresses.getAddressAssetBalances({ address });
+const addressAssetBalances = await addresses.getAddressAssetBalances(address);
 console.log(addressAssetBalances);
+```
+
+### **Get Address Assets**
+
+Returns Liquid asset balances for an address together with each asset record.
+
+**Parameters:**
+
+- {string} address
+
+[ [NodeJS Example](examples/nodejs/liquid/addresses.ts) ] [ [HTML Example](examples/html/liquid/addresses.html) ] [ [Top](#features) ]
+
+```js
+const {
+  liquid: { addresses },
+} = mempoolJS();
+
+const address = 'Go65t19hP2FuhBMYtgbdMDgdmEzNwh1i48';
+
+const addressAssets = await addresses.getAddressAssets(address);
+console.log(addressAssets);
+```
+
+### **Get Spendable Assets**
+
+Returns Liquid spendable UTXOs grouped by asset together with each asset record.
+
+**Parameters:**
+
+- {string} address
+
+[ [NodeJS Example](examples/nodejs/liquid/addresses.ts) ] [ [HTML Example](examples/html/liquid/addresses.html) ] [ [Top](#features) ]
+
+```js
+const {
+  liquid: { addresses },
+} = mempoolJS();
+
+const address = 'Go65t19hP2FuhBMYtgbdMDgdmEzNwh1i48';
+
+const spendableAssets = await addresses.getSpendableAssets(address);
+console.log(spendableAssets);
 ```
 
 ### **Get Asset**
