@@ -1,12 +1,16 @@
 import { AxiosInstance } from 'axios';
 import {
   Address,
+  AddressParam,
   AddressTxsUtxo,
   AddressInstance,
 } from '../../interfaces/bitcoin/addresses';
 import { Tx } from '../../interfaces/bitcoin/transactions';
 
 export const useAddresses = (api: AxiosInstance): AddressInstance => {
+  const normalizeAddressParam = (params: AddressParam) =>
+    typeof params === 'string' ? { address: params } : params;
+
   const getAddress = async (params: { address: string }) => {
     const { data } = await api.get<Address>(`/address/${params.address}`);
     return data;
@@ -35,9 +39,10 @@ export const useAddresses = (api: AxiosInstance): AddressInstance => {
     return data;
   };
 
-  const getAddressTxsUtxo = async (params: { address: string }) => {
+  const getAddressTxsUtxo = async (params: AddressParam) => {
+    const { address } = normalizeAddressParam(params);
     const { data } = await api.get<AddressTxsUtxo[]>(
-      `/address/${params.address}/utxo`
+      `/address/${address}/utxo`
     );
     return data;
   };
