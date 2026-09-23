@@ -1,5 +1,5 @@
 import { Block } from './blocks';
-import { DifficultyData, Hashrate } from './difficulty';
+import { Hashrate } from './difficulty';
 
 export type MiningInterval =
   | '24h'
@@ -91,7 +91,7 @@ export interface MiningInstance {
   getPoolBlocks: (params: { slug: string; height?: number }) => Promise<Block[]>;
   getPool: (params: { slug: string }) => Promise<MiningPoolStat>;
   getPoolsHistoricalHashrate: (params: { interval: MiningInterval }) => Promise<HistoricalSeriesPoint[]>;
-  getHistoricalHashrate: (params: { interval: string }) => Promise<Hashrate>;
+  getHistoricalHashrate: (params: { interval: MiningInterval }) => Promise<Hashrate>;
   getDifficultyAdjustments: (params?: { interval?: MiningInterval }) => Promise<DifficultyAdjustmentHistory[]>;
   getRewardStats: (params: { blockCount: number }) => Promise<RewardStats>;
   getHistoricalBlockFees: (params: { interval: MiningInterval }) => Promise<HistoricalSeriesPoint[]>;

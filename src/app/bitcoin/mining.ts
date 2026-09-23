@@ -6,6 +6,7 @@ import {
   HistoricalPriceParams,
   HistoricalSeriesPoint,
   MiningInstance,
+  MiningInterval,
   MiningPoolStat,
   MiningPoolsStats,
   MiningPoolSummary,
@@ -52,7 +53,7 @@ export const useMining = (api: AxiosInstance): MiningInstance => {
     return data;
   };
 
-  const getPoolsStats = async (params: { interval?: string } = {}) => {
+  const getPoolsStats = async (params: { interval?: MiningInterval } = {}) => {
     const { data } = await api.get<MiningPoolsStats>(
       buildIntervalPath(`/v1/mining/pools`, params.interval)
     );
@@ -85,7 +86,7 @@ export const useMining = (api: AxiosInstance): MiningInstance => {
     return data;
   };
 
-  const getPoolsHistoricalHashrate = async (params: { interval: string }) => {
+  const getPoolsHistoricalHashrate = async (params: { interval: MiningInterval }) => {
     const interval = assertNonEmptyString(params.interval, 'interval');
     const { data } = await api.get<HistoricalSeriesPoint[]>(
       `/v1/mining/hashrate/pools/${interval}`
@@ -93,13 +94,13 @@ export const useMining = (api: AxiosInstance): MiningInstance => {
     return data;
   };
 
-  const getHistoricalHashrate = async (params: { interval: string }) => {
+  const getHistoricalHashrate = async (params: { interval: MiningInterval }) => {
     const interval = assertNonEmptyString(params.interval, 'interval');
     const { data } = await api.get<Hashrate>(`/v1/mining/hashrate/${interval}`);
     return data;
   };
 
-  const getDifficultyAdjustments = async (params: { interval?: string } = {}) => {
+  const getDifficultyAdjustments = async (params: { interval?: MiningInterval } = {}) => {
     const { data } = await api.get<DifficultyAdjustmentHistory[]>(
       buildIntervalPath(`/v1/mining/difficulty-adjustments`, params.interval)
     );
@@ -114,7 +115,7 @@ export const useMining = (api: AxiosInstance): MiningInstance => {
     return data;
   };
 
-  const getHistoricalBlockFees = async (params: { interval: string }) => {
+  const getHistoricalBlockFees = async (params: { interval: MiningInterval }) => {
     const interval = assertNonEmptyString(params.interval, 'interval');
     const { data } = await api.get<HistoricalSeriesPoint[]>(
       `/v1/mining/blocks/fees/${interval}`
@@ -131,7 +132,7 @@ export const useMining = (api: AxiosInstance): MiningInstance => {
     return data;
   };
 
-  const getHistoricalBlockRewards = async (params: { interval: string }) => {
+  const getHistoricalBlockRewards = async (params: { interval: MiningInterval }) => {
     const interval = assertNonEmptyString(params.interval, 'interval');
     const { data } = await api.get<HistoricalSeriesPoint[]>(
       `/v1/mining/blocks/rewards/${interval}`
@@ -139,7 +140,7 @@ export const useMining = (api: AxiosInstance): MiningInstance => {
     return data;
   };
 
-  const getHistoricalBlockFeeRates = async (params: { interval: string }) => {
+  const getHistoricalBlockFeeRates = async (params: { interval: MiningInterval }) => {
     const interval = assertNonEmptyString(params.interval, 'interval');
     const { data } = await api.get<HistoricalSeriesPoint[]>(
       `/v1/mining/blocks/fee-rates/${interval}`
@@ -147,7 +148,7 @@ export const useMining = (api: AxiosInstance): MiningInstance => {
     return data;
   };
 
-  const getHistoricalBlockSizesWeights = async (params: { interval: string }) => {
+  const getHistoricalBlockSizesWeights = async (params: { interval: MiningInterval }) => {
     const interval = assertNonEmptyString(params.interval, 'interval');
     const { data } = await api.get<HistoricalBlockSizesWeights>(
       `/v1/mining/blocks/sizes-weights/${interval}`
@@ -155,7 +156,7 @@ export const useMining = (api: AxiosInstance): MiningInstance => {
     return data;
   };
 
-  const getHistoricalBlocksHealth = async (params: { interval: string }) => {
+  const getHistoricalBlocksHealth = async (params: { interval: MiningInterval }) => {
     const interval = assertNonEmptyString(params.interval, 'interval');
     const { data } = await api.get<BlocksHealthHistoryPoint[]>(
       `/v1/mining/blocks/predictions/${interval}`
