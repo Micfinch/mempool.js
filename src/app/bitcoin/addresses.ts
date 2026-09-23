@@ -40,25 +40,28 @@ export const useAddresses = (api: AxiosInstance): AddressInstance => {
     return fetchAddress(normalizedParams);
   };
 
-  const getAddressTxs = async (params: { address: string, after_txid?: string }) => {
-    if (params.after_txid) {
-      const { data } = await api.get<Tx[]>(`/address/${params.address}/txs?after_txid=${params.after_txid}`);
+  const getAddressTxs = async (params: AddressParam | { address: string, after_txid?: string }) => {
+    const { address } = normalizeAddressParam(params);
+    if (typeof params === 'object' && params !== null && params.after_txid) {
+      const { data } = await api.get<Tx[]>(`/address/${address}/txs?after_txid=${params.after_txid}`);
       return data;
     }
-    const { data } = await api.get<Tx[]>(`/address/${params.address}/txs`);
+    const { data } = await api.get<Tx[]>(`/address/${address}/txs`);
     return data;
   };
 
-  const getAddressTxsChain = async (params: { address: string }) => {
+  const getAddressTxsChain = async (params: AddressParam) => {
+    const { address } = normalizeAddressParam(params);
     const { data } = await api.get<Tx[]>(
-      `/address/${params.address}/txs/chain`
+      `/address/${address}/txs/chain`
     );
     return data;
   };
 
-  const getAddressTxsMempool = async (params: { address: string }) => {
+  const getAddressTxsMempool = async (params: AddressParam) => {
+    const { address } = normalizeAddressParam(params);
     const { data } = await api.get<Tx[]>(
-      `/address/${params.address}/txs/mempool`
+      `/address/${address}/txs/mempool`
     );
     return data;
   };

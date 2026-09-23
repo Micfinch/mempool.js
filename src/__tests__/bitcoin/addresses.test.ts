@@ -113,6 +113,59 @@ const main = async () => {
     assert.deepStrictEqual(calls, [`/address/${address}/utxo`]);
   });
 
+  await run('getAddressTxs accepts a plain address string', async () => {
+    const { api, calls, responses } = createApi();
+    const address = '3BKe7WtZV6ftrHJKJ3HapDqGhhy9k4jcmM';
+    const expected = [{ txid: 'tx-1' }];
+    responses.set(`/address/${address}/txs`, expected);
+    const addresses = useAddresses(api);
+
+    const result = await addresses.getAddressTxs(address);
+
+    assert.deepStrictEqual(result, expected);
+    assert.deepStrictEqual(calls, [`/address/${address}/txs`]);
+  });
+
+  await run('getAddressTxs preserves after_txid for address objects', async () => {
+    const { api, calls, responses } = createApi();
+    const address = '3BKe7WtZV6ftrHJKJ3HapDqGhhy9k4jcmM';
+    const after_txid = 'tx-0';
+    const expected = [{ txid: 'tx-1' }];
+    responses.set(`/address/${address}/txs?after_txid=${after_txid}`, expected);
+    const addresses = useAddresses(api);
+
+    const result = await addresses.getAddressTxs({ address, after_txid });
+
+    assert.deepStrictEqual(result, expected);
+    assert.deepStrictEqual(calls, [`/address/${address}/txs?after_txid=${after_txid}`]);
+  });
+
+  await run('getAddressTxsChain accepts a plain address string', async () => {
+    const { api, calls, responses } = createApi();
+    const address = '3BKe7WtZV6ftrHJKJ3HapDqGhhy9k4jcmM';
+    const expected = [{ txid: 'tx-1' }];
+    responses.set(`/address/${address}/txs/chain`, expected);
+    const addresses = useAddresses(api);
+
+    const result = await addresses.getAddressTxsChain(address);
+
+    assert.deepStrictEqual(result, expected);
+    assert.deepStrictEqual(calls, [`/address/${address}/txs/chain`]);
+  });
+
+  await run('getAddressTxsMempool accepts a plain address string', async () => {
+    const { api, calls, responses } = createApi();
+    const address = '3BKe7WtZV6ftrHJKJ3HapDqGhhy9k4jcmM';
+    const expected = [{ txid: 'tx-1' }];
+    responses.set(`/address/${address}/txs/mempool`, expected);
+    const addresses = useAddresses(api);
+
+    const result = await addresses.getAddressTxsMempool(address);
+
+    assert.deepStrictEqual(result, expected);
+    assert.deepStrictEqual(calls, [`/address/${address}/txs/mempool`]);
+  });
+
   await run('getAddressBalance returns confirmed and unconfirmed totals', async () => {
     const { api, calls, responses } = createApi();
     const address = '3BKe7WtZV6ftrHJKJ3HapDqGhhy9k4jcmM';

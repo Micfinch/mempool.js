@@ -12,13 +12,13 @@ const init = async () => {
     const addressBalance = await addresses.getAddressBalance(address);
     console.log(addressBalance);
     
-    const addressTxs = await addresses.getAddressTxs({ address });
+    const addressTxs = await addresses.getAddressTxs(address);
     console.log(addressTxs);
     
-    const addressTxsChain = await addresses.getAddressTxsChain({ address });
+    const addressTxsChain = await addresses.getAddressTxsChain(address);
     console.log(addressTxsChain);
     
-    const addressTxsMempool = await addresses.getAddressTxsMempool({ address });
+    const addressTxsMempool = await addresses.getAddressTxsMempool(address);
     console.log(addressTxsMempool);
     
     const addressTxsUtxo = await addresses.getAddressTxsUtxo(address);

@@ -145,7 +145,7 @@ const {
 
 const address = '1wizSAYSbuyXbt9d8JV8ytm5acqq2TorC';
 
-const addressTxs = await addresses.getAddressTxs({ address });
+const addressTxs = await addresses.getAddressTxs(address);
 console.log(addressTxs);
 ```
 
@@ -166,7 +166,7 @@ const {
 
 const address = '1wizSAYSbuyXbt9d8JV8ytm5acqq2TorC';
 
-const addressTxsChain = await addresses.getAddressTxsChain({ address });
+const addressTxsChain = await addresses.getAddressTxsChain(address);
 console.log(addressTxsChain);
 ```
 
@@ -187,7 +187,7 @@ const {
 
 const address = '1wizSAYSbuyXbt9d8JV8ytm5acqq2TorC';
 
-const addressTxsMempool = await addresses.getAddressTxsMempool({ address });
+const addressTxsMempool = await addresses.getAddressTxsMempool(address);
 console.log(addressTxsMempool);
 ```
 
