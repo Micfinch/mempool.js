@@ -159,7 +159,9 @@ export const useAddresses = (api: AxiosInstance): AddressLiquidInstance => {
     const assetRecords = await assets.getAssets({
       asset_ids: balances.map(({ asset_id }) => asset_id),
     });
-    const assetMap = new Map(assetRecords.map((asset) => [asset.asset_id, asset] as const));
+    const assetMap = new Map(
+      balances.map(({ asset_id }, index) => [asset_id, assetRecords[index]] as const)
+    );
 
     return balances.map((balance) => {
       const asset = assetMap.get(balance.asset_id);
@@ -185,7 +187,9 @@ export const useAddresses = (api: AxiosInstance): AddressLiquidInstance => {
     const assetRecords = await assets.getAssets({
       asset_ids: groupedAssets.map(({ asset_id }) => asset_id),
     });
-    const assetMap = new Map(assetRecords.map((asset) => [asset.asset_id, asset] as const));
+    const assetMap = new Map(
+      groupedAssets.map(({ asset_id }, index) => [asset_id, assetRecords[index]] as const)
+    );
 
     return groupedAssets.map((groupedAsset) => {
       const asset = assetMap.get(groupedAsset.asset_id);
