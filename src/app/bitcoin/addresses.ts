@@ -42,7 +42,7 @@ export const useAddresses = (api: AxiosInstance): AddressInstance => {
 
   const getAddressTxs = async (params: AddressParam | { address: string, after_txid?: string }) => {
     const { address } = normalizeAddressParam(params);
-    if (typeof params === 'object' && params !== null && params.after_txid) {
+    if (typeof params === 'object' && params !== null && 'after_txid' in params && params.after_txid) {
       const { data } = await api.get<Tx[]>(`/address/${address}/txs?after_txid=${params.after_txid}`);
       return data;
     }
