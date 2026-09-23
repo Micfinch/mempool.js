@@ -8,7 +8,7 @@ const init = async () => {
     
     const address = 'Go65t19hP2FuhBMYtgbdMDgdmEzNwh1i48';
     
-    const myAddress = await addresses.getAddress({ address });
+    const myAddress = await addresses.getAddress(address);
     console.log(myAddress);
     
     const addressTxs = await addresses.getAddressTxs({ address });
@@ -20,22 +20,16 @@ const init = async () => {
     const addressTxsMempool = await addresses.getAddressTxsMempool({ address });
     console.log(addressTxsMempool);
     
-    const addressTxsUtxo = await addresses.getAddressTxsUtxo({ address });
+    const addressTxsUtxo = await addresses.getAddressTxsUtxo(address);
     console.log(addressTxsUtxo);
 
-    const addressAssetBalances = await addresses.getAddressAssetBalances({
-      address,
-    });
+    const addressAssetBalances = await addresses.getAddressAssetBalances(address);
     console.log(addressAssetBalances);
 
-    const addressAssets = await addresses.getAddressAssets({
-      address,
-    });
+    const addressAssets = await addresses.getAddressAssets(address);
     console.log(addressAssets);
 
-    const spendableAssets = await addresses.getSpendableAssets({
-      address,
-    });
+    const spendableAssets = await addresses.getSpendableAssets(address);
     console.log(spendableAssets);
   } catch (error) {
     console.log(error);
