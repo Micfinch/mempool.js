@@ -82,7 +82,7 @@ const {
 
 const address = 'Go65t19hP2FuhBMYtgbdMDgdmEzNwh1i48';
 
-const myAddress = await addresses.getAddress({ address });
+const myAddress = await addresses.getAddress(address);
 console.log(myAddress);
 ```
 
