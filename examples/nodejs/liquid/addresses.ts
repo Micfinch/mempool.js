@@ -32,6 +32,11 @@ const init = async () => {
       address,
     });
     console.log(addressAssets);
+
+    const spendableAssets = await addresses.getSpendableAssets({
+      address,
+    });
+    console.log(spendableAssets);
   } catch (error) {
     console.log(error);
   }
