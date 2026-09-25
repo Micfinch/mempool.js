@@ -87,6 +87,36 @@ const main = async () => {
     assert.deepStrictEqual(calls, [`/address/${address}`]);
   });
 
+  await run('getAddress accepts a mempool address URL', async () => {
+    const { api, calls, responses } = createApi();
+    const address = '3BKe7WtZV6ftrHJKJ3HapDqGhhy9k4jcmM';
+    const addressUrl = `https://mempool.space/address/${address}`;
+    const expected = {
+      address,
+      chain_stats: {
+        funded_txo_count: 1,
+        funded_txo_sum: 5,
+        spent_txo_count: 0,
+        spent_txo_sum: 0,
+        tx_count: 1,
+      },
+      mempool_stats: {
+        funded_txo_count: 0,
+        funded_txo_sum: 0,
+        spent_txo_count: 0,
+        spent_txo_sum: 0,
+        tx_count: 0,
+      },
+    };
+    responses.set(`/address/${address}`, expected);
+    const addresses = useAddresses(api);
+
+    const result = await addresses.getAddress(addressUrl);
+
+    assert.deepStrictEqual(result, expected);
+    assert.deepStrictEqual(calls, [`/address/${address}`]);
+  });
+
   await run('getAddressTxsUtxo accepts an address object', async () => {
     const { api, calls, responses } = createApi();
     const address = '3BKe7WtZV6ftrHJKJ3HapDqGhhy9k4jcmM';

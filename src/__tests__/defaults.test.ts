@@ -38,6 +38,33 @@ const main = async () => {
       delete require.cache[require.resolve('../index')];
     }
   });
+
+  await run('mempoolJS normalizes hostname URLs', async () => {
+    const originalCreate = axios.create;
+    const configs: unknown[] = [];
+
+    try {
+      (axios as unknown as { create: (config: unknown) => unknown }).create = (
+        config
+      ) => {
+        configs.push(config);
+        return {};
+      };
+
+      delete require.cache[require.resolve('../index')];
+      const mempoolJS = require('../index');
+
+      mempoolJS({ hostname: 'https://mempool.space/' });
+
+      assert.deepStrictEqual(
+        configs.map((config) => (config as { baseURL: string }).baseURL),
+        ['https://mempool.space/api/', 'https://mempool.space/liquid/api/']
+      );
+    } finally {
+      axios.create = originalCreate;
+      delete require.cache[require.resolve('../index')];
+    }
+  });
 };
 
 main().catch((error) => {
