@@ -1,5 +1,6 @@
 import axios, { AxiosInstance } from 'axios';
 import { MempoolConfig } from '../../interfaces';
+import { normalizeHostname } from '../normalize';
 
 export const makeBitcoinAPI = ({
   hostname,
@@ -10,6 +11,7 @@ export const makeBitcoinAPI = ({
   if (!protocol) {
     hostname?.includes('localhost') ? protocol = 'http' : protocol = 'https';
   }
+  hostname = normalizeHostname(hostname);
   if (network && ['testnet', 'signet'].includes(network)) {
     network = `/${network}`;
   } else {
@@ -33,6 +35,7 @@ export const makeLiquidAPI = ({
   if (!protocol) {
     hostname?.includes('localhost') ? protocol = 'http' : protocol = 'https';
   }
+  hostname = normalizeHostname(hostname);
   if (network && ['testnet', 'liquidtestnet'].includes(network)) {
     network = `/liquidtestnet`;
   } else {
