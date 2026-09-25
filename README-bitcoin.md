@@ -92,7 +92,7 @@ Returns details about an address. Available fields: `address`, `chain_stats`, an
 
 **Parameters:**
 
-- {string} address
+- {string} address - raw address or full `mempool.space/address/...` URL
 
 [ [NodeJS Example](examples/nodejs/bitcoin/addresses.ts) ] [ [HTML Example](examples/html/bitcoin/addresses.html) ] [ [Top](#features) ]
 
@@ -113,7 +113,7 @@ Returns a receive-address balance summary with `confirmed`, `unconfirmed`, and `
 
 **Parameters:**
 
-- {string} address
+- {string} address - raw address or full `mempool.space/address/...` URL
 
 [ [NodeJS Example](examples/nodejs/bitcoin/addresses.ts) ] [ [HTML Example](examples/html/bitcoin/addresses.html) ] [ [Top](#features) ]
 
@@ -134,7 +134,7 @@ Get transaction history for the specified address/scripthash, sorted with newest
 
 **Parameters:**
 
-- {string} address
+- {string} address - raw address or full `mempool.space/address/...` URL
 
 [ [NodeJS Example](examples/nodejs/bitcoin/addresses.ts) ] [ [HTML Example](examples/html/bitcoin/addresses.html) ] [ [Top](#features) ]
 

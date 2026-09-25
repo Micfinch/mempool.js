@@ -71,7 +71,7 @@ Returns details about an address. Available fields: `address`, `chain_stats`, an
 
 **Parameters:**
 
-- {string} address
+- {string} address - raw address or full `mempool.space/address/...` URL
 
 [ [NodeJS Example](examples/nodejs/liquid/addresses.ts) ] [ [HTML Example](examples/html/liquid/addresses.html) ] [ [Top](#features) ]
 
@@ -92,7 +92,7 @@ Get transaction history for the specified address/scripthash, sorted with newest
 
 **Parameters:**
 
-- {string} address
+- {string} address - raw address or full `mempool.space/address/...` URL
 
 [ [NodeJS Example](examples/nodejs/liquid/addresses.ts) ] [ [HTML Example](examples/html/liquid/addresses.html) ] [ [Top](#features) ]
 
@@ -113,7 +113,7 @@ Get confirmed transaction history for the specified address/scripthash, sorted w
 
 **Parameters:**
 
-- {string} address
+- {string} address - raw address or full `mempool.space/address/...` URL
 
 [ [NodeJS Example](examples/nodejs/liquid/addresses.ts) ] [ [HTML Example](examples/html/liquid/addresses.html) ] [ [Top](#features) ]
 
@@ -134,7 +134,7 @@ Get unconfirmed transaction history for the specified `address/scripthash`. Retu
 
 **Parameters:**
 
-- {string} address
+- {string} address - raw address or full `mempool.space/address/...` URL
 
 [ [NodeJS Example](examples/nodejs/liquid/addresses.ts) ] [ [HTML Example](examples/html/liquid/addresses.html) ] [ [Top](#features) ]
 
