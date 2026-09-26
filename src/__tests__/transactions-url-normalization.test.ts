@@ -38,6 +38,11 @@ const main = async () => {
   await run('normalizeTxId extracts a txid from a mempool transaction URL', () => {
     assert.strictEqual(normalizeTxId(txUrl), txid);
     assert.strictEqual(normalizeTxId(`https://mempool.space/testnet/tx/${txid}?foo=bar`), txid);
+    assert.strictEqual(normalizeTxId(`https://mempool.space/liquidtestnet/tx/${txid}`), txid);
+    assert.strictEqual(
+      normalizeTxId(`https://example.com/redirect/tx/not-a-tx/tx/${txid}`),
+      `https://example.com/redirect/tx/not-a-tx/tx/${txid}`
+    );
   });
 
   await run('bitcoin transactions.getTx accepts a mempool transaction URL', async () => {
