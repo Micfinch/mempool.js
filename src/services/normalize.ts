@@ -59,8 +59,7 @@ export const normalizeTxId = (txid: string): string => {
   const extractFromPath = (pathname: string) => {
     const segments = pathname
       .split('/')
-      .filter((segment) => segment.length > 0)
-      .map((segment) => decodeURIComponent(segment));
+      .filter((segment) => segment.length > 0);
 
     if (segments.length === 2 && segments[0] === 'tx') {
       return segments[1];
