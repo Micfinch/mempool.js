@@ -1,3 +1,5 @@
+import { FeesMempoolBlocks } from './fees';
+
 export interface Mempool {
   count: number;
   vsize: number;
@@ -6,7 +8,8 @@ export interface Mempool {
 }
 
 export interface MempoolInstance {
-  getMempool: () => Promise<Mempool[]>;
+  getMempool: () => Promise<Mempool>;
+  getMempoolBlocks: () => Promise<FeesMempoolBlocks[]>;
   getMempoolTxids: () => Promise<string[]>;
   getMempoolRecent: () => Promise<MempoolRecent[]>;
 }

@@ -4,10 +4,16 @@ import {
   MempoolRecent,
   MempoolInstance,
 } from '../../interfaces/bitcoin/mempool';
+import { FeesMempoolBlocks } from '../../interfaces/bitcoin/fees';
 
 export const useMempool = (api: AxiosInstance): MempoolInstance => {
   const getMempool = async () => {
-    const { data } = await api.get<Mempool[]>(`/mempool`);
+    const { data } = await api.get<Mempool>(`/mempool`);
+    return data;
+  };
+
+  const getMempoolBlocks = async () => {
+    const { data } = await api.get<FeesMempoolBlocks[]>(`/v1/fees/mempool-blocks`);
     return data;
   };
 
@@ -23,6 +29,7 @@ export const useMempool = (api: AxiosInstance): MempoolInstance => {
 
   return {
     getMempool,
+    getMempoolBlocks,
     getMempoolTxids,
     getMempoolRecent,
   };

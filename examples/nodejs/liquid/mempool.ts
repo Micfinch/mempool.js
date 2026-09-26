@@ -8,6 +8,9 @@ const init = async () => {
     
     const getMempool = await mempool.getMempool();
     console.log(getMempool);
+
+    const getMempoolBlocks = await mempool.getMempoolBlocks();
+    console.log(getMempoolBlocks);
     
     const getMempoolRecent = await mempool.getMempoolRecent();
     console.log(getMempoolRecent);

@@ -39,6 +39,7 @@ Interface to access Liquid APIs.
   - [Get Fees Mempool Blocks](#get-fees-mempool-blocks)
 - Mempool
   - [Get Mempool](#get-mempool)
+  - [Get Mempool Blocks](#get-mempool-blocks)
   - [Get Mempool Recent](#get-mempool-recent)
   - [Get Mempool Txids](#get-mempool-txids)
 - Transactions
@@ -559,7 +560,7 @@ console.log(feesMempoolBlocks);
 
 ### **Get Mempool**
 
-Returns current mempool backlog statistics.
+Returns current mempool backlog statistics as a single object.
 
 [ [NodeJS Example](examples/nodejs/liquid/mempool.ts) ] [ [HTML Example](examples/html/liquid/mempool.html) ] [ [Top](#features) ]
 
@@ -570,6 +571,21 @@ const {
 
 const getMempool = await mempool.getMempool();
 console.log(getMempool);
+```
+
+### **Get Mempool Blocks**
+
+Returns current mempool as projected blocks.
+
+[ [NodeJS Example](examples/nodejs/liquid/mempool.ts) ] [ [HTML Example](examples/html/liquid/mempool.html) ] [ [Top](#features) ]
+
+```js
+const {
+  liquid: { mempool },
+} = mempoolJS();
+
+const getMempoolBlocks = await mempool.getMempoolBlocks();
+console.log(getMempoolBlocks);
 ```
 
 ### **Get Mempool Recent**

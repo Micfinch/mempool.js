@@ -54,6 +54,7 @@ Interface to access Bitcoin `mainet`, `testnet`, `signet` APIs.
   - [Get Channels Geodata By Public Key](#get-channels-geodata-by-public-key)
 - Mempool
   - [Get Mempool](#get-mempool)
+  - [Get Mempool Blocks](#get-mempool-blocks)
   - [Get Mempool Recent](#get-mempool-recent)
   - [Get Mempool Txids](#get-mempool-txids)
 - Transactions
@@ -755,7 +756,7 @@ Returns current mempool as projected blocks.
 
 ### **Get Mempool**
 
-Returns current mempool backlog statistics.
+Returns current mempool backlog statistics as a single object.
 
 [ [NodeJS Example](examples/nodejs/bitcoin/mempool.ts) ] [ [HTML Example](examples/html/bitcoin/mempool.html) ] [ [Top](#features) ]
 
@@ -766,6 +767,21 @@ const {
 
 const getMempool = await mempool.getMempool();
 console.log(getMempool);
+```
+
+### **Get Mempool Blocks**
+
+Returns current mempool as projected blocks.
+
+[ [NodeJS Example](examples/nodejs/bitcoin/mempool.ts) ] [ [HTML Example](examples/html/bitcoin/mempool.html) ] [ [Top](#features) ]
+
+```js
+const {
+  bitcoin: { mempool },
+} = mempoolJS();
+
+const getMempoolBlocks = await mempool.getMempoolBlocks();
+console.log(getMempoolBlocks);
 ```
 
 ### **Get Mempool Recent**
