@@ -4,6 +4,7 @@ import {
   FeesMempoolBlocks,
   FeeInstance,
 } from '../../interfaces/bitcoin/fees';
+import { normalizeTxId } from '../../services/normalize';
 
 export const useFees = (api: AxiosInstance): FeeInstance => {
   const getFeesRecommended = async () => {
@@ -19,8 +20,9 @@ export const useFees = (api: AxiosInstance): FeeInstance => {
   };
 
   const getCPFP = async (params: { txid: string }) => {
+    const txid = normalizeTxId(params.txid);
     const { data } = await api.get<FeesMempoolBlocks[]>(
-      `/v1/cpfp/${params.txid}`
+      `/v1/cpfp/${txid}`
     );
     return data;
   };

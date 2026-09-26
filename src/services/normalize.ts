@@ -48,3 +48,40 @@ export const normalizeAddress = (address: string): string => {
 
   return value;
 };
+
+export const normalizeTxId = (txid: string): string => {
+  const value = txid.trim();
+
+  if (value.length === 0) {
+    throw new TypeError('txid must be a non-empty string');
+  }
+
+  const extractFromPath = (pathname: string) => {
+    const pattern = /\/tx\/([^/?#]+)/g;
+    let match: RegExpExecArray | null = null;
+    let currentMatch: RegExpExecArray | null = pattern.exec(pathname);
+
+    while (currentMatch) {
+      match = currentMatch;
+      currentMatch = pattern.exec(pathname);
+    }
+
+    return match ? decodeURIComponent(match[1]) : undefined;
+  };
+
+  try {
+    const extracted = extractFromPath(new URL(value).pathname);
+    if (extracted) {
+      return extracted;
+    }
+  } catch {
+    // fall back to raw string parsing below
+  }
+
+  const extracted = extractFromPath(value);
+  if (extracted) {
+    return extracted;
+  }
+
+  return value;
+};

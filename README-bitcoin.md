@@ -741,6 +741,8 @@ console.log(channelsGeodataByPublicKey);
 
 Returns current mempool as projected blocks.
 
+`txid` may be a raw transaction id or a full mempool transaction URL.
+
 [ [NodeJS Example](examples/nodejs/bitcoin/fees.ts) ] [ [HTML Example](examples/html/bitcoin/fees.html) ] [ [Top](#features) ]
 
 ```js
@@ -802,6 +804,8 @@ console.log(getMempoolTxids);
 
 Returns details about a transaction. Available fields: `txid`, `version`, `locktime`, `size`, `weight`, `fee`, `vin`, `vout`, and `status`.
 
+`txid` may be a raw transaction id or a full mempool transaction URL.
+
 **Parameters:**
 
 - {string} txid
@@ -822,6 +826,8 @@ console.log(tx);
 ### **Get Tx Status**
 
 Returns the confirmation status of a transaction. Available fields: `confirmed` (boolean), `block_height` (optional), and `block_hash` (optional).
+
+`txid` may be a raw transaction id or a full mempool transaction URL.
 
 **Parameters:**
 
@@ -844,6 +850,8 @@ console.log(txStatus);
 
 Returns a transaction serialized as hex.
 
+`txid` may be a raw transaction id or a full mempool transaction URL.
+
 **Parameters:**
 
 - {string} txid
@@ -864,6 +872,8 @@ console.log(txHex);
 ### **Get Tx Raw**
 
 Returns a transaction as binary data.
+
+`txid` may be a raw transaction id or a full mempool transaction URL.
 
 **Parameters:**
 
@@ -886,6 +896,8 @@ console.log(txRaw);
 
 Returns a merkle inclusion proof for the transaction using bitcoind's merkleblock format.
 
+`txid` may be a raw transaction id or a full mempool transaction URL.
+
 **Parameters:**
 
 - {string} txid
@@ -907,6 +919,8 @@ console.log(txMerkleBlockProof);
 
 Returns a merkle inclusion proof for the transaction using Electrum's blockchain.transaction.get_merkle format.
 
+`txid` may be a raw transaction id or a full mempool transaction URL.
+
 **Parameters:**
 
 - {string} txid
@@ -927,6 +941,8 @@ console.log(txMerkleProof);
 ### **Get Tx Outspend**
 
 Returns the spending status of a transaction output. Available fields: `spent` (boolean), `txid` (optional), `vin` (optional), and `status` (optional, the status of the spending tx).
+
+`txid` may be a raw transaction id or a full mempool transaction URL.
 
 **Parameters:**
 
@@ -952,6 +968,8 @@ console.log(txOutspend);
 ### **Get Tx Outspends**
 
 Returns the spending status of all transaction outputs.
+
+`txid` may be a raw transaction id or a full mempool transaction URL.
 
 **Parameters:**
 
@@ -1068,6 +1086,8 @@ websocket.wsStopTrackingAddresses(ws); // for in-browser websocket, use websocke
 ### **Track Transaction**
 
 Subscribe to transaction updates.
+
+`txid` may be a raw transaction id or a full mempool transaction URL.
 
 [ [NodeJS Example](examples/nodejs/bitcoin/websocket.ts) ] [ [HTML Example](examples/html/bitcoin/websocket.html) ] [ [Top](#features) ]
 

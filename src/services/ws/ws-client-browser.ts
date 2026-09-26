@@ -1,3 +1,5 @@
+import { normalizeTxId } from '../normalize';
+
 const TIMEOUT_DURATION = 5000;
 const MAX_RETRY_COUNT = 3;
 
@@ -52,7 +54,7 @@ export const wsStopTrackingAddresses = (ws: WebSocket): void => {
 }
 
 export const wsTrackTransaction = (ws: WebSocket, txid: string): void => {
-  wsActionWrapper(ws, { 'track-tx': txid });
+  wsActionWrapper(ws, { 'track-tx': normalizeTxId(txid) });
 }
 
 export const wsStopTrackingTransaction = (ws: WebSocket): void => {
