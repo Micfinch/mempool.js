@@ -1,4 +1,5 @@
 import { WsInstance } from '../../interfaces/bitcoin/websockets';
+import { normalizeHostname } from '../../services/normalize';
 import { 
   wsInit as wsInitBrowser,
   wsWantData as wsWantDataBrowser,
@@ -44,6 +45,7 @@ export const useWebsocket = (hostname: string, network: string, protocol: string
   } else {
     protocol = 'wss';
   }
+  hostname = normalizeHostname(hostname);
   if (network && ['testnet', 'signet'].includes(network)) {
     network = `/${network}`;
   } else {

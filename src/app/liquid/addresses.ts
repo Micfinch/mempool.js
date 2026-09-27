@@ -11,18 +11,14 @@ import {
 } from '../../interfaces/liquid/addresses';
 import { Tx } from '../../interfaces/liquid/transactions';
 import { useAssets } from './assets';
+import { normalizeAddress } from '../../services/normalize';
 
 export const useAddresses = (api: AxiosInstance): AddressLiquidInstance => {
   const assets = useAssets(api);
 
   const normalizeAddressParams = (params: AddressParam) => {
     if (typeof params === 'string') {
-      const address = params.trim();
-      if (address.length === 0) {
-        throw new TypeError('address must be a non-empty string');
-      }
-
-      return { address };
+      return { address: normalizeAddress(params) };
     }
 
     if (typeof params !== 'object' || params === null) {
@@ -32,7 +28,7 @@ export const useAddresses = (api: AxiosInstance): AddressLiquidInstance => {
       throw new TypeError('address must be a non-empty string');
     }
 
-    return { address: params.address.trim() };
+    return { address: normalizeAddress(params.address) };
   };
 
   const resolveSpendableUtxos = async (params: AddressParam): Promise<AddressSpendableUtxo[]> => {
@@ -115,24 +111,27 @@ export const useAddresses = (api: AxiosInstance): AddressLiquidInstance => {
   };
 
   const getAddressTxs = async (params: { address: string, after_txid?: string }) => {
+    const address = normalizeAddress(params.address);
     if (params.after_txid) {
-      const { data } = await api.get<Tx[]>(`/address/${params.address}/txs?after_txid=${params.after_txid}`);
+      const { data } = await api.get<Tx[]>(`/address/${address}/txs?after_txid=${params.after_txid}`);
       return data;
     }
-    const { data } = await api.get<Tx[]>(`/address/${params.address}/txs`);
+    const { data } = await api.get<Tx[]>(`/address/${address}/txs`);
     return data;
   };
 
   const getAddressTxsChain = async (params: { address: string }) => {
+    const address = normalizeAddress(params.address);
     const { data } = await api.get<Tx[]>(
-      `/address/${params.address}/txs/chain`
+      `/address/${address}/txs/chain`
     );
     return data;
   };
 
   const getAddressTxsMempool = async (params: { address: string }) => {
+    const address = normalizeAddress(params.address);
     const { data } = await api.get<Tx[]>(
-      `/address/${params.address}/txs/mempool`
+      `/address/${address}/txs/mempool`
     );
     return data;
   };

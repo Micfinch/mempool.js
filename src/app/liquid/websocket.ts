@@ -1,4 +1,5 @@
 import { WsLiquidInstance } from '../../interfaces/liquid/websockets';
+import { normalizeHostname } from '../../services/normalize';
 import { 
   wsInit as wsInitBrowser,
   wsWantData as wsWantDataBrowser,
@@ -36,6 +37,7 @@ export const useWebsocket = (hostname: string, network: string, protocol: string
   } else {
     protocol = 'wss';
   }
+  hostname = normalizeHostname(hostname);
   if (network && ['testnet', 'liquidtestnet'].includes(network)) {
     network = `/liquidtestnet`;
   } else {
