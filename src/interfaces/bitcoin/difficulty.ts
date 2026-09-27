@@ -33,5 +33,5 @@ export interface DifficultyData {
 
 export interface DifficultyInstance {
   getDifficultyAdjustment: () => Promise<Adjustment>;
-  getHashrate: (params: { interval: string }) => Promise<Hashrate>;
+  getHashrate: (params?: { interval?: string }) => Promise<Hashrate>;
 }

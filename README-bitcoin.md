@@ -33,6 +33,7 @@ Interface to access Bitcoin `mainet`, `testnet`, `signet` APIs.
   - [Get Blocks Tip Hash](#get-blocks-tip-hash)
 - Difficulty
   - [Get Difficulty Adjustment](#get-difficulty-adjustment)
+  - [Get Hashrate](#get-hashrate)
 - Fees
   - [Get Fees Recommended](#get-fees-recommended)
   - [Get Fees Mempool Blocks](#get-fees-mempool-blocks)
@@ -444,6 +445,28 @@ const {
 
 const difficultyAdjustment = await difficulty.getDifficultyAdjustment();
 console.log(difficultyAdjustment);
+```
+
+### **Get Hashrate**
+
+Returns hashrate and difficulty history for the selected interval used by the Hashrate & Difficulty graph.
+
+**Parameters:**
+
+- {string} interval (optional: `3m`, `6m`, `1y`, `2y`, `3y`, `all`)
+
+[ [NodeJS Example](examples/nodejs/bitcoin/difficulty.ts) ] [ [HTML Example](examples/html/bitcoin/difficulty.html) ] [ [Top](#features) ]
+
+```js
+const {
+  bitcoin: { difficulty },
+} = mempoolJS();
+
+const hashrateDefault = await difficulty.getHashrate();
+console.log(hashrateDefault);
+
+const hashrate = await difficulty.getHashrate({ interval: '1y' });
+console.log(hashrate);
 ```
 
 ### **Get Fees Recommended**
