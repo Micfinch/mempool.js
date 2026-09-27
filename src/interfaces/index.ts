@@ -13,11 +13,13 @@ import { BlockLiquidInstance } from './liquid/blocks';
 import { TxLiquidInstance } from './liquid/transactions';
 import { WsLiquidInstance } from './liquid/websockets';
 import { AxiosRequestConfig } from 'axios';
+import { MempoolCacheConfig, MempoolCacheController } from './cache';
 export interface MempoolConfig {
   protocol?: 'http' | 'https';
   hostname?: string;
   network?: string;
   config?: AxiosRequestConfig;
+  cache?: MempoolCacheConfig;
 }
 
 export interface MempoolReturn {
@@ -26,7 +28,7 @@ export interface MempoolReturn {
     blocks: BlockInstance;
     difficulty: DifficultyInstance;
     fees: FeeInstance;
-    lightning: LightningInstance
+    lightning: LightningInstance;
     mempool: MempoolInstance;
     transactions: TxInstance;
     websocket: WsInstance;
@@ -40,4 +42,5 @@ export interface MempoolReturn {
     transactions: TxLiquidInstance;
     websocket: WsLiquidInstance;
   };
+  cache?: MempoolCacheController;
 }

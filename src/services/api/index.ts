@@ -1,15 +1,20 @@
 import axios, { AxiosInstance } from 'axios';
 import { MempoolConfig } from '../../interfaces';
+import { MempoolCacheController } from '../../interfaces/cache';
 import { normalizeHostname } from '../normalize';
+import { applyCache } from './cache';
 
 export const makeBitcoinAPI = ({
   hostname,
   network,
   protocol,
   config,
-}: MempoolConfig): { api: AxiosInstance } => {
+  cache,
+}: MempoolConfig): { api: AxiosInstance; cache: MempoolCacheController } => {
   if (!protocol) {
-    hostname?.includes('localhost') ? protocol = 'http' : protocol = 'https';
+    hostname?.includes('localhost')
+      ? (protocol = 'http')
+      : (protocol = 'https');
   }
   hostname = normalizeHostname(hostname);
   if (network && ['testnet', 'signet'].includes(network)) {
@@ -21,8 +26,10 @@ export const makeBitcoinAPI = ({
     baseURL: `${protocol}://${hostname}${network}/api/`,
     ...config,
   });
+  const cacheController = applyCache(api, cache);
   return {
     api,
+    cache: cacheController,
   };
 };
 
@@ -31,9 +38,12 @@ export const makeLiquidAPI = ({
   network,
   protocol,
   config,
-}: MempoolConfig): { api: AxiosInstance } => {
+  cache,
+}: MempoolConfig): { api: AxiosInstance; cache: MempoolCacheController } => {
   if (!protocol) {
-    hostname?.includes('localhost') ? protocol = 'http' : protocol = 'https';
+    hostname?.includes('localhost')
+      ? (protocol = 'http')
+      : (protocol = 'https');
   }
   hostname = normalizeHostname(hostname);
   if (network && ['testnet', 'liquidtestnet'].includes(network)) {
@@ -45,8 +55,10 @@ export const makeLiquidAPI = ({
     baseURL: `${protocol}://${hostname}${network}/api/`,
     ...config,
   });
+  const cacheController = applyCache(api, cache);
   return {
     api,
+    cache: cacheController,
   };
 };
 
