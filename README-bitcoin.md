@@ -10,6 +10,7 @@ Interface to access Bitcoin `mainet`, `testnet`, `signet` APIs.
 
 - Addresses
   - [Get Address](#get-address)
+  - [Validate Address](#validate-address)
   - [Get Address Balance](#get-address-balance)
   - [Get Address Txs](#get-address-txs)
   - [Get Address Txs Chain](#get-address-txs-chain)
@@ -105,6 +106,27 @@ const address = '1wizSAYSbuyXbt9d8JV8ytm5acqq2TorC';
 
 const myAddress = await addresses.getAddress(address);
 console.log(myAddress);
+```
+
+### **Validate Address**
+
+Validates a Bitcoin address and returns validation details from the mempool API (including `isvalid`).
+
+**Parameters:**
+
+- {string} address
+
+[ [NodeJS Example](examples/nodejs/bitcoin/addresses.ts) ] [ [HTML Example](examples/html/bitcoin/addresses.html) ] [ [Top](#features) ]
+
+```js
+const {
+  bitcoin: { addresses },
+} = mempoolJS();
+
+const address = '1KFHE7w8BhaENAswwryaoccDb6qcT6DbYY';
+
+const validation = await addresses.validateAddress(address);
+console.log(validation);
 ```
 
 ### **Get Address Balance**

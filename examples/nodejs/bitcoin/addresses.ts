@@ -9,6 +9,9 @@ const init = async () => {
     const myAddress = await addresses.getAddress(address);
     console.log(myAddress);
 
+    const validation = await addresses.validateAddress(address);
+    console.log(validation);
+
     const addressBalance = await addresses.getAddressBalance(address);
     console.log(addressBalance);
     

@@ -1,6 +1,7 @@
 import { AxiosInstance } from 'axios';
 import {
   Address,
+  AddressValidation,
   AddressBalance,
   AddressParam,
   AddressParams,
@@ -35,6 +36,12 @@ export const useAddresses = (api: AxiosInstance): AddressInstance => {
   const getAddress = async (params: AddressParam) => {
     const normalizedParams = normalizeAddressParam(params);
     return fetchAddress(normalizedParams);
+  };
+
+  const validateAddress = async (params: AddressParam): Promise<AddressValidation> => {
+    const { address } = normalizeAddressParam(params);
+    const { data } = await api.get<AddressValidation>(`/v1/validate-address/${address}`);
+    return data;
   };
 
   const getAddressTxs = async (params: { address: string, after_txid?: string }) => {
@@ -87,6 +94,7 @@ export const useAddresses = (api: AxiosInstance): AddressInstance => {
 
   return {
     getAddress,
+    validateAddress,
     getAddressTxs,
     getAddressTxsChain,
     getAddressTxsMempool,

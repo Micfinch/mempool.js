@@ -6,6 +6,11 @@ export interface Address {
   mempool_stats: StatsInfo;
 }
 
+export interface AddressValidation {
+  isvalid: boolean;
+  [key: string]: unknown;
+}
+
 export interface StatsInfo {
   funded_txo_count: number;
   funded_txo_sum: number;
@@ -36,6 +41,7 @@ export type AddressParam = AddressParams | string;
 
 export interface AddressInstance {
   getAddress: (params: AddressParam) => Promise<Address>;
+  validateAddress: (params: AddressParam) => Promise<AddressValidation>;
   getAddressTxs: (params: { address: string, after_txid?: string }) => Promise<Tx[]>;
   getAddressTxsChain: (params: { address: string }) => Promise<Tx[]>;
   getAddressTxsMempool: (params: { address: string }) => Promise<Tx[]>;

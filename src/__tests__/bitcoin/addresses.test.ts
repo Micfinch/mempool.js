@@ -117,6 +117,37 @@ const main = async () => {
     assert.deepStrictEqual(calls, [`/address/${address}`]);
   });
 
+  await run('validateAddress accepts a plain address string', async () => {
+    const { api, calls, responses } = createApi();
+    const address = '1KFHE7w8BhaENAswwryaoccDb6qcT6DbYY';
+    const expected = {
+      isvalid: true,
+      is_script: false,
+      is_witness: false,
+    };
+    responses.set(`/v1/validate-address/${address}`, expected);
+    const addresses = useAddresses(api);
+
+    const result = await addresses.validateAddress(address);
+
+    assert.deepStrictEqual(result, expected);
+    assert.deepStrictEqual(calls, [`/v1/validate-address/${address}`]);
+  });
+
+  await run('validateAddress accepts a mempool address URL', async () => {
+    const { api, calls, responses } = createApi();
+    const address = '1KFHE7w8BhaENAswwryaoccDb6qcT6DbYY';
+    const addressUrl = `https://mempool.space/address/${address}`;
+    const expected = { isvalid: true };
+    responses.set(`/v1/validate-address/${address}`, expected);
+    const addresses = useAddresses(api);
+
+    const result = await addresses.validateAddress(addressUrl);
+
+    assert.deepStrictEqual(result, expected);
+    assert.deepStrictEqual(calls, [`/v1/validate-address/${address}`]);
+  });
+
   await run('getAddressTxsUtxo accepts an address object', async () => {
     const { api, calls, responses } = createApi();
     const address = '3BKe7WtZV6ftrHJKJ3HapDqGhhy9k4jcmM';
